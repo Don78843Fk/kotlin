@@ -449,8 +449,18 @@ def sbomBundlePrebuiltForPublish = tasks.register("sbomBundlePrebuiltForPublish"
 }
 
 tasks.register("bundlePrebuilt", (PlatformInfo.isWindows()) ? Zip : Tar) {
+    /**
+     * Sboms are checksums, they should take cross-dist klibs into account somehow
+     */
     dependsOn(sbomBundlePrebuiltForPublish)
     dependsOn("crossDistPlatformLibs")
+    /**
+     * For linux:
+     * - add additional input (of a folder)
+     * - in this folder, klibs for macos should appear
+     *      - this probably should be done via some additional task that downloads these klibs
+     *
+     */
     def simpleOsName = HostManager.platformName()
     archiveBaseName.set("kotlin-native-prebuilt-$simpleOsName")
     archiveVersion.set(kotlinVersion)
