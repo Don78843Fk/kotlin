@@ -39,6 +39,25 @@ abstract class ManifestWritingTest : AbstractNativeSimpleTest() {
         doManifestTest("native/native.tests/testData/klib/simpleManifest")
     }
 
+    @Test
+    @TestMetadata("nativeTargetsOverwrite")
+    fun testNativeTargetsOverwrite() {
+        doManifestTest(
+            "native/native.tests/testData/klib/nativeTargetsOverwrite",
+            // note some leading and trailing spaces
+            "-Xmanifest-native-targets=ios_arm64, ios_x64,linux_x64 ,mingw_x64,macos_x64,macos_arm64"
+        )
+    }
+
+    @Test
+    @TestMetadata("nativeTargetsOverwriteUnknownTarget")
+    fun testNativeTargetsOverwriteUnknownTargetName() {
+        doManifestTest(
+            "native/native.tests/testData/klib/nativeTargetsOverwriteUnknownTarget",
+            "-Xmanifest-native-targets=ios_arm64,ios_x64, unknown_target"
+        )
+    }
+
     private fun doManifestTest(testDataDir: String, vararg additionalCompilerArguments: String) {
         val rootDir = File(testDataDir)
         require(rootDir.exists()) { "File doesn't exist: ${rootDir.absolutePath}" }
