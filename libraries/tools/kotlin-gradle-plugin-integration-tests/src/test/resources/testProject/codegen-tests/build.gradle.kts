@@ -66,7 +66,6 @@ val jarTestFolders by tasks.registering {
 
     doLast {
         testClassesDirectories.forEach { dir ->
-            logger.info("Jar {} folder", dir.name)
             ant.withGroovyBuilder {
                 "jar"("basedir" to dir.path, "destfile" to "libs/${dir.name}.jar")
             }
