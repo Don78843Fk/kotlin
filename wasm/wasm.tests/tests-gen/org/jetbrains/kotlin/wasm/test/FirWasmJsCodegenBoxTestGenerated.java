@@ -9812,9 +9812,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("tryCatchFinallyWithHandleResult.wasm-eh.kt")
+    public void testTryCatchFinallyWithHandleResult_wasm_eh() {
+      runTest("compiler/testData/codegen/box/coroutines/tryCatchFinallyWithHandleResult.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("tryCatchWithHandleResult.kt")
     public void testTryCatchWithHandleResult() {
       runTest("compiler/testData/codegen/box/coroutines/tryCatchWithHandleResult.kt");
+    }
+
+    @Test
+    @TestMetadata("tryCatchWithHandleResult.wash-eh.kt")
+    public void testTryCatchWithHandleResult_wash_eh() {
+      runTest("compiler/testData/codegen/box/coroutines/tryCatchWithHandleResult.wash-eh.kt");
     }
 
     @Test
@@ -9824,9 +9836,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("tryFinallyInsideInlineLambda.wasm-eh.kt")
+    public void testTryFinallyInsideInlineLambda_wasm_eh() {
+      runTest("compiler/testData/codegen/box/coroutines/tryFinallyInsideInlineLambda.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("tryFinallyWithHandleResult.kt")
     public void testTryFinallyWithHandleResult() {
       runTest("compiler/testData/codegen/box/coroutines/tryFinallyWithHandleResult.kt");
+    }
+
+    @Test
+    @TestMetadata("tryFinallyWithHandleResult.wasm-eh.kt")
+    public void testTryFinallyWithHandleResult_wasm_eh() {
+      runTest("compiler/testData/codegen/box/coroutines/tryFinallyWithHandleResult.wasm-eh.kt");
     }
 
     @Test
@@ -15668,9 +15692,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("catch1.wasm-eh.kt")
+    public void testCatch1_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/catch1.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("catch2.kt")
     public void testCatch2() {
       runTest("compiler/testData/codegen/box/exceptions/catch2.kt");
+    }
+
+    @Test
+    @TestMetadata("catch2.wasm-eh.kt")
+    public void testCatch2_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/catch2.wasm-eh.kt");
     }
 
     @Test
@@ -15680,9 +15716,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("catch7.wasm-eh.kt")
+    public void testCatch7_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/catch7.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("extend0.kt")
     public void testExtend0() {
       runTest("compiler/testData/codegen/box/exceptions/extend0.kt");
+    }
+
+    @Test
+    @TestMetadata("extend0.wasm-eh.kt")
+    public void testExtend0_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/extend0.wasm-eh.kt");
     }
 
     @Test
@@ -15692,15 +15740,33 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("rethrow.wasm-eh.kt")
+    public void testRethrow_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/rethrow.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("throw0.kt")
     public void testThrow0() {
       runTest("compiler/testData/codegen/box/exceptions/throw0.kt");
     }
 
     @Test
+    @TestMetadata("throw0.wasm-eh.kt")
+    public void testThrow0_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/throw0.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("throw_from_catch.kt")
     public void testThrow_from_catch() {
       runTest("compiler/testData/codegen/box/exceptions/throw_from_catch.kt");
+    }
+
+    @Test
+    @TestMetadata("throw_from_catch.wasm-eh.kt")
+    public void testThrow_from_catch_wasm_eh() {
+      runTest("compiler/testData/codegen/box/exceptions/throw_from_catch.wasm-eh.kt");
     }
   }
 
@@ -16194,9 +16260,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("breakAndOuterFinally.wasm-eh.kt")
+    public void testBreakAndOuterFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/breakAndOuterFinally.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("continueAndOuterFinally.kt")
     public void testContinueAndOuterFinally() {
       runTest("compiler/testData/codegen/box/finally/continueAndOuterFinally.kt");
+    }
+
+    @Test
+    @TestMetadata("continueAndOuterFinally.wasm-eh.kt")
+    public void testContinueAndOuterFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/continueAndOuterFinally.wasm-eh.kt");
     }
 
     @Test
@@ -16206,9 +16284,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("decrementInFinally.wasm-eh.kt")
+    public void testDecrementInFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/decrementInFinally.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finallyAndFinally.kt")
     public void testFinallyAndFinally() {
       runTest("compiler/testData/codegen/box/finally/finallyAndFinally.kt");
+    }
+
+    @Test
+    @TestMetadata("finallyAndFinally.wash-eh.kt")
+    public void testFinallyAndFinally_wash_eh() {
+      runTest("compiler/testData/codegen/box/finally/finallyAndFinally.wash-eh.kt");
     }
 
     @Test
@@ -16218,9 +16308,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("kt31923_break.wasm-eh.kt")
+    public void testKt31923_break_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt31923_break.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("kt31923_continue.kt")
     public void testKt31923_continue() {
       runTest("compiler/testData/codegen/box/finally/kt31923_continue.kt");
+    }
+
+    @Test
+    @TestMetadata("kt31923_continue.wasm-eh.kt")
+    public void testKt31923_continue_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt31923_continue.wasm-eh.kt");
     }
 
     @Test
@@ -16230,9 +16332,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("kt31923_return.wasm-eh.kt")
+    public void testKt31923_return_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt31923_return.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("kt3549.kt")
     public void testKt3549() {
       runTest("compiler/testData/codegen/box/finally/kt3549.kt");
+    }
+
+    @Test
+    @TestMetadata("kt3549.wasm-eh.kt")
+    public void testKt3549_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt3549.wasm-eh.kt");
     }
 
     @Test
@@ -16242,9 +16356,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("kt3706.wasm-eh.kt")
+    public void testKt3706_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt3706.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("kt3867.kt")
     public void testKt3867() {
       runTest("compiler/testData/codegen/box/finally/kt3867.kt");
+    }
+
+    @Test
+    @TestMetadata("kt3867.wasm-eh.kt")
+    public void testKt3867_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt3867.wasm-eh.kt");
     }
 
     @Test
@@ -16254,9 +16380,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("kt3874.wasm-eh.kt")
+    public void testKt3874_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt3874.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("kt3894.kt")
     public void testKt3894() {
       runTest("compiler/testData/codegen/box/finally/kt3894.kt");
+    }
+
+    @Test
+    @TestMetadata("kt3894.wasm-eh.kt")
+    public void testKt3894_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt3894.wasm-eh.kt");
     }
 
     @Test
@@ -16266,9 +16404,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("kt4134.wasm-eh.kt")
+    public void testKt4134_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/kt4134.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("loopAndFinally.kt")
     public void testLoopAndFinally() {
       runTest("compiler/testData/codegen/box/finally/loopAndFinally.kt");
+    }
+
+    @Test
+    @TestMetadata("loopAndFinally.wasm-eh.kt")
+    public void testLoopAndFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/loopAndFinally.wasm-eh.kt");
     }
 
     @Test
@@ -16284,9 +16434,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("nestedFinallyAndNonFinallyTry2.wasm-eh.kt")
+    public void testNestedFinallyAndNonFinallyTry2_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/nestedFinallyAndNonFinallyTry2.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("nestedFinallyAndNonFinallyTry3.kt")
     public void testNestedFinallyAndNonFinallyTry3() {
       runTest("compiler/testData/codegen/box/finally/nestedFinallyAndNonFinallyTry3.kt");
+    }
+
+    @Test
+    @TestMetadata("nestedFinallyAndNonFinallyTry3.wasm-eh.kt")
+    public void testNestedFinallyAndNonFinallyTry3_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/nestedFinallyAndNonFinallyTry3.wasm-eh.kt");
     }
 
     @Test
@@ -16296,9 +16458,27 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("nestedFinallyAndNonFinallyTry4.wasm-eh.kt")
+    public void testNestedFinallyAndNonFinallyTry4_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/nestedFinallyAndNonFinallyTry4.wasm-eh.kt");
+    }
+
+    @Test
+    @TestMetadata("nestedFinallyAndNonFinallyTry.wasm-eh.kt")
+    public void testNestedFinallyAndNonFinallyTry_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/nestedFinallyAndNonFinallyTry.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("notChainCatch.kt")
     public void testNotChainCatch() {
       runTest("compiler/testData/codegen/box/finally/notChainCatch.kt");
+    }
+
+    @Test
+    @TestMetadata("notChainCatch.wasm-eh.kt")
+    public void testNotChainCatch_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/notChainCatch.wasm-eh.kt");
     }
 
     @Test
@@ -16308,9 +16488,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("objectInFinally.wasm-eh.kt")
+    public void testObjectInFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/objectInFinally.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("returnNullFromInlined.kt")
     public void testReturnNullFromInlined() {
       runTest("compiler/testData/codegen/box/finally/returnNullFromInlined.kt");
+    }
+
+    @Test
+    @TestMetadata("returnNullFromInlined.wasm-eh.kt")
+    public void testReturnNullFromInlined_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/returnNullFromInlined.wasm-eh.kt");
     }
 
     @Test
@@ -16320,15 +16512,33 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("someStuff.wasm-eh.kt")
+    public void testSomeStuff_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/someStuff.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("tryFinally.kt")
     public void testTryFinally() {
       runTest("compiler/testData/codegen/box/finally/tryFinally.kt");
     }
 
     @Test
+    @TestMetadata("tryFinally.wasm-eh.kt")
+    public void testTryFinally_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/tryFinally.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("tryLoopTry.kt")
     public void testTryLoopTry() {
       runTest("compiler/testData/codegen/box/finally/tryLoopTry.kt");
+    }
+
+    @Test
+    @TestMetadata("tryLoopTry.wasm-eh.kt")
+    public void testTryLoopTry_wasm_eh() {
+      runTest("compiler/testData/codegen/box/finally/tryLoopTry.wasm-eh.kt");
     }
   }
 
@@ -26349,6 +26559,12 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     @TestMetadata("tryCatch.kt")
     public void testTryCatch() {
       runTest("compiler/testData/codegen/box/localClass/tryCatch.kt");
+    }
+
+    @Test
+    @TestMetadata("tryCatch.wasm-eh.kt")
+    public void testTryCatch_wasm_eh() {
+      runTest("compiler/testData/codegen/box/localClass/tryCatch.wasm-eh.kt");
     }
 
     @Test
@@ -40464,9 +40680,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("catch3.wasm-eh.kt")
+    public void testCatch3_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/catch3.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("catch4.kt")
     public void testCatch4() {
       runTest("compiler/testData/codegen/box/try/catch4.kt");
+    }
+
+    @Test
+    @TestMetadata("catch4.wasm-eh.kt")
+    public void testCatch4_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/catch4.wasm-eh.kt");
     }
 
     @Test
@@ -40476,15 +40704,33 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("catch5.wasm-eh.kt")
+    public void testCatch5_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/catch5.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("catch6.kt")
     public void testCatch6() {
       runTest("compiler/testData/codegen/box/try/catch6.kt");
     }
 
     @Test
+    @TestMetadata("catch6.wasm-eh.kt")
+    public void testCatch6_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/catch6.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("catch8.kt")
     public void testCatch8() {
       runTest("compiler/testData/codegen/box/try/catch8.kt");
+    }
+
+    @Test
+    @TestMetadata("catch8.wasm-eh.kt")
+    public void testCatch8_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/catch8.wasm-eh.kt");
     }
 
     @Test
@@ -40500,9 +40746,27 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("finally10.wasm-eh.kt")
+    public void testFinally10_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally10.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finally11.kt")
     public void testFinally11() {
       runTest("compiler/testData/codegen/box/try/finally11.kt");
+    }
+
+    @Test
+    @TestMetadata("finally11.wasm-eh.kt")
+    public void testFinally11_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally11.wasm-eh.kt");
+    }
+
+    @Test
+    @TestMetadata("finally1.wasm-eh.kt")
+    public void testFinally1_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally1.wasm-eh.kt");
     }
 
     @Test
@@ -40512,9 +40776,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("finally2.wasm-eh.kt")
+    public void testFinally2_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally2.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finally3.kt")
     public void testFinally3() {
       runTest("compiler/testData/codegen/box/try/finally3.kt");
+    }
+
+    @Test
+    @TestMetadata("finally3.wasm-eh.kt")
+    public void testFinally3_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally3.wasm-eh.kt");
     }
 
     @Test
@@ -40524,9 +40800,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("finally4.wash-eh.kt")
+    public void testFinally4_wash_eh() {
+      runTest("compiler/testData/codegen/box/try/finally4.wash-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finally5.kt")
     public void testFinally5() {
       runTest("compiler/testData/codegen/box/try/finally5.kt");
+    }
+
+    @Test
+    @TestMetadata("finally5.wasm-eh.kt")
+    public void testFinally5_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally5.wasm-eh.kt");
     }
 
     @Test
@@ -40536,9 +40824,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("finally6.wasm-eh.kt")
+    public void testFinally6_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally6.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finally7.kt")
     public void testFinally7() {
       runTest("compiler/testData/codegen/box/try/finally7.kt");
+    }
+
+    @Test
+    @TestMetadata("finally7.wasm-eh.kt")
+    public void testFinally7_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally7.wasm-eh.kt");
     }
 
     @Test
@@ -40548,9 +40848,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("finally8.wasm-eh.kt")
+    public void testFinally8_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally8.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("finally9.kt")
     public void testFinally9() {
       runTest("compiler/testData/codegen/box/try/finally9.kt");
+    }
+
+    @Test
+    @TestMetadata("finally9.wasm-eh.kt")
+    public void testFinally9_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/finally9.wasm-eh.kt");
     }
 
     @Test
@@ -40560,9 +40872,21 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("returnsDifferentTypes.wasm-eh.kt")
+    public void testReturnsDifferentTypes_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/returnsDifferentTypes.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("try1.kt")
     public void testTry1() {
       runTest("compiler/testData/codegen/box/try/try1.kt");
+    }
+
+    @Test
+    @TestMetadata("try1.wasm-eh.kt")
+    public void testTry1_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/try1.wasm-eh.kt");
     }
 
     @Test
@@ -40572,15 +40896,33 @@ public class FirWasmJsCodegenBoxTestGenerated extends AbstractFirWasmJsCodegenBo
     }
 
     @Test
+    @TestMetadata("try2.wasm-eh.kt")
+    public void testTry2_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/try2.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("try3.kt")
     public void testTry3() {
       runTest("compiler/testData/codegen/box/try/try3.kt");
     }
 
     @Test
+    @TestMetadata("try3.wasm-eh.kt")
+    public void testTry3_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/try3.wasm-eh.kt");
+    }
+
+    @Test
     @TestMetadata("try4.kt")
     public void testTry4() {
       runTest("compiler/testData/codegen/box/try/try4.kt");
+    }
+
+    @Test
+    @TestMetadata("try4.wasm-eh.kt")
+    public void testTry4_wasm_eh() {
+      runTest("compiler/testData/codegen/box/try/try4.wasm-eh.kt");
     }
   }
 
