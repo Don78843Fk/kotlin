@@ -117,7 +117,7 @@ object FirReturnsImpliesAnalyzer : FirControlFlowChecker(MppCheckerKind.Common) 
                 if (!operation.isTrueFor(resultExpression.value)) return false
             } else {
                 if (expressionType != null && !operation.canBeTrueFor(context.session, expressionType)) return false
-                val resultVar = logicSystem.variableStorage.getOrCreateIfReal(flow, resultExpression, unwrapAlias = true)
+                val resultVar = logicSystem.variableStorage.getOrCreateIfReal(flow, resultExpression)
                 if (resultVar != null) {
                     val impliedByReturnValue = logicSystem.approveOperationStatement(flow, OperationStatement(resultVar, operation))
                     if (impliedByReturnValue.isNotEmpty()) {
