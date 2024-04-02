@@ -45,6 +45,9 @@ FILE fqName:<root> fileName:/test.kt
         overridden:
           public abstract fun <get-a> (): kotlin.Int declared in <root>.KotlinInterface
         $this: VALUE_PARAMETER name:<this> type:<root>.KotlinInterface
+    PROPERTY FAKE_OVERRIDE name:a visibility:public modality:FINAL [fake_override,var]
+      overridden:
+        public final a: kotlin.Int declared in <root>.Java1
   CLASS CLASS name:B modality:FINAL visibility:public superTypes:[<root>.Java1; <root>.KotlinInterface]
     $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.B
     PROPERTY name:a visibility:public modality:OPEN [val]
@@ -103,6 +106,9 @@ FILE fqName:<root> fileName:/test.kt
       $this: VALUE_PARAMETER name:<this> type:<root>.B
       VALUE_PARAMETER name:t index:0 type:kotlin.Int
       BLOCK_BODY
+    PROPERTY FAKE_OVERRIDE name:a visibility:public modality:FINAL [fake_override,var]
+      overridden:
+        public final a: kotlin.Int declared in <root>.Java1
   CLASS INTERFACE name:KotlinInterface modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
     $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.KotlinInterface
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
