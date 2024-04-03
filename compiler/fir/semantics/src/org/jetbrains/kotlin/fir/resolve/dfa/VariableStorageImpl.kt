@@ -6,7 +6,6 @@
 package org.jetbrains.kotlin.fir.resolve.dfa
 
 import org.jetbrains.kotlin.fir.FirElement
-import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.references.symbol
@@ -14,7 +13,7 @@ import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.unwrapFakeOverrides
 
-class VariableStorageImpl(private val session: FirSession) : VariableStorage() {
+class VariableStorageImpl {
     // These are basically hash sets, since they map each key to itself. The only point of having them as maps
     // is to deduplicate equal instances with lookups. The impact of that is questionable, but whatever.
     private val realVariables: MutableMap<RealVariable, RealVariable> = HashMap()
@@ -23,9 +22,7 @@ class VariableStorageImpl(private val session: FirSession) : VariableStorage() {
     private val nextVariableIndex: Int
         get() = realVariables.size + syntheticVariables.size + 1
 
-    fun clear(): VariableStorageImpl = VariableStorageImpl(session)
-
-    override fun getLocalVariable(symbol: FirBasedSymbol<*>, isReceiver: Boolean): RealVariable? =
+    fun getLocalVariable(symbol: FirBasedSymbol<*>, isReceiver: Boolean): RealVariable? =
         RealVariable(symbol, isReceiver, null, null, nextVariableIndex).takeIfKnown()
 
     fun getOrCreateLocalVariable(symbol: FirBasedSymbol<*>, isReceiver: Boolean): RealVariable =
@@ -43,7 +40,7 @@ class VariableStorageImpl(private val session: FirSession) : VariableStorage() {
     // If "something else" is a type/nullability statement, use `getOrCreateIfReal`; if it's `... == true/false`, use `get`.
     // The point is to only create variables and statements if they lead to useful conclusions; if a variable
     // does not exist, then no statements about it have been made, and if it's synthetic, none will be created later.
-    override fun get(flow: Flow, fir: FirElement, unwrapAlias: Boolean): DataFlowVariable? =
+    fun get(flow: Flow, fir: FirElement, unwrapAlias: Boolean): DataFlowVariable? =
         getImpl(flow, fir, createReal = false, unwrapAlias)?.takeSyntheticIfKnown()
 
     fun getOrCreateIfReal(flow: Flow, fir: FirElement, unwrapAlias: Boolean): DataFlowVariable? =
