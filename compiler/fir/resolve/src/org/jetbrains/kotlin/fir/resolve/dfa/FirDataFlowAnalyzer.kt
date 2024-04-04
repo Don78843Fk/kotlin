@@ -232,9 +232,8 @@ abstract class FirDataFlowAnalyzer(
         val (node, graph) = graphBuilder.exitFunction(function)
         node.mergeIncomingFlow()
         graph.completePostponedNodes()
-        val info = DataFlowInfo(variableStorage)
         resetSmartCastPosition()
-        return FirControlFlowGraphReferenceImpl(graph, info)
+        return FirControlFlowGraphReferenceImpl(graph)
     }
 
     // ----------------------------------- Anonymous function -----------------------------------
@@ -303,10 +302,8 @@ abstract class FirDataFlowAnalyzer(
     fun enterCodeFragment(codeFragment: FirCodeFragment) {
         graphBuilder.enterCodeFragment(codeFragment).mergeIncomingFlow { _, flow ->
             val smartCasts = codeFragment.codeFragmentContext?.smartCasts.orEmpty()
-            for ((originalRealVariable, exactTypes) in smartCasts) {
-                val realVariable = variableStorage.getOrPut(originalRealVariable)
-                val typeStatement = PersistentTypeStatement(realVariable, exactTypes.toPersistentSet())
-                flow.addTypeStatement(typeStatement)
+            for ((realVariable, exactTypes) in smartCasts) {
+                flow.addTypeStatement(PersistentTypeStatement(realVariable, exactTypes.toPersistentSet()))
             }
         }
     }
@@ -673,7 +670,7 @@ abstract class FirDataFlowAnalyzer(
         val previousConditionExitNode = previousNodes.singleOrNull() as? WhenBranchConditionExitNode ?: return@mergeIncomingFlow
         val previousCondition = previousConditionExitNode.fir.condition
         if (!previousCondition.resolvedType.isBoolean) return@mergeIncomingFlow
-        val previousConditionVariable = variableStorage.get(flow, previousCondition) ?: return@mergeIncomingFlow
+        val previousConditionVariable = variableStorage.getIfUsed(flow, previousCondition) ?: return@mergeIncomingFlow
         flow.commitOperationStatement(previousConditionVariable eq false)
     }
 
@@ -683,7 +680,7 @@ abstract class FirDataFlowAnalyzer(
         resultEnterNode.mergeIncomingFlow { _, flow ->
             // If the condition is invalid, don't generate smart casts to Any or Boolean.
             if (whenBranch.condition.resolvedType.isBoolean) {
-                val conditionVariable = variableStorage.get(flow, whenBranch.condition) ?: return@mergeIncomingFlow
+                val conditionVariable = variableStorage.getIfUsed(flow, whenBranch.condition) ?: return@mergeIncomingFlow
                 flow.commitOperationStatement(conditionVariable eq true)
             }
         }
@@ -716,7 +713,7 @@ abstract class FirDataFlowAnalyzer(
         loopConditionExitNode.mergeIncomingFlow()
         loopBlockEnterNode.mergeIncomingFlow { _, flow ->
             if (loop.condition.resolvedType.isBoolean) {
-                val conditionVariable = variableStorage.get(flow, loop.condition) ?: return@mergeIncomingFlow
+                val conditionVariable = variableStorage.getIfUsed(flow, loop.condition) ?: return@mergeIncomingFlow
                 flow.commitOperationStatement(conditionVariable eq true)
             }
         }
@@ -760,7 +757,7 @@ abstract class FirDataFlowAnalyzer(
     private fun processLoopExit(flow: MutableFlow, node: LoopExitNode, conditionExitNode: LoopConditionExitNode) {
         if (conditionExitNode.isDead || node.previousNodes.count { !it.isDead } > 1) return
         if (conditionExitNode.fir.resolvedType.isBoolean) {
-            val variable = variableStorage.get(flow, conditionExitNode.fir) ?: return
+            val variable = variableStorage.getIfUsed(flow, conditionExitNode.fir) ?: return
             flow.commitOperationStatement(variable eq false)
         }
     }
@@ -899,7 +896,7 @@ abstract class FirDataFlowAnalyzer(
              *   for implications from previous flow in the subject, because VariableStorage doesn't differ between the whole safe call
              *   and synthetically generated selector, see [variableStorage.getOrCreate] implementation
              */
-            previousFlow.implications[expressionVariable]?.forEach {
+            previousFlow.getImplications(expressionVariable)?.forEach {
                 if (it.condition.operation != Operation.EqNull) {
                     flow.addImplication(it)
                 }
@@ -1157,7 +1154,7 @@ abstract class FirDataFlowAnalyzer(
         val (leftExitNode, rightEnterNode) = graphBuilder.exitLeftBinaryLogicExpressionArgument(binaryLogicExpression)
         leftExitNode.mergeIncomingFlow()
         rightEnterNode.mergeIncomingFlow { _, flow ->
-            val leftOperandVariable = variableStorage.get(flow, binaryLogicExpression.leftOperand) ?: return@mergeIncomingFlow
+            val leftOperandVariable = variableStorage.getIfUsed(flow, binaryLogicExpression.leftOperand) ?: return@mergeIncomingFlow
             val isAnd = binaryLogicExpression.kind == LogicOperationKind.AND
             flow.commitOperationStatement(leftOperandVariable eq isAnd)
         }
@@ -1172,7 +1169,7 @@ abstract class FirDataFlowAnalyzer(
         val flowFromLeft = leftOperandNode.getFlow(path)
         val flowFromRight = rightOperandNode.getFlow(path)
 
-        val leftVariable = variableStorage.get(flowFromLeft, fir.leftOperand)
+        val leftVariable = variableStorage.getIfUsed(flowFromLeft, fir.leftOperand)
         val leftIsBoolean = leftVariable != null && fir.leftOperand.resolvedType.isBoolean
         if (!leftOperandNode.isDead && rightOperandNode.isDead) {
             // If the right operand does not terminate, then we know that the value of the entire expression
@@ -1182,7 +1179,7 @@ abstract class FirDataFlowAnalyzer(
                 flow.commitOperationStatement(leftVariable!! eq !isAnd)
             }
         } else {
-            val rightVariable = variableStorage.get(flowFromRight, fir.rightOperand)
+            val rightVariable = variableStorage.getIfUsed(flowFromRight, fir.rightOperand)
             val rightIsBoolean = rightVariable != null && fir.rightOperand.resolvedType.isBoolean
             val operatorVariable = variableStorage.createSynthetic(fir)
             // If `left && right` is true, then both are evaluated to true. If `left || right` is false, then both are false.
@@ -1211,11 +1208,9 @@ abstract class FirDataFlowAnalyzer(
     }
 
     private fun exitBooleanNot(flow: MutableFlow, expression: FirFunctionCall) {
-        val argumentVariable = variableStorage.get(
-            flow,
-            // Processing case with a candidate might be necessary for PCLA, because even top-level calls might be not fully completed
-            expression.candidate()?.dispatchReceiverExpression() ?: expression.dispatchReceiver!!
-        ) ?: return
+        // Processing case with a candidate might be necessary for PCLA, because even top-level calls might be not fully completed
+        val argument = expression.candidate()?.dispatchReceiverExpression() ?: expression.dispatchReceiver!!
+        val argumentVariable = variableStorage.getIfUsed(flow, argument) ?: return
         val expressionVariable = variableStorage.createSynthetic(expression)
         // Alternatively: (expression == true => argument == false) && (expression == false => argument == true)
         // Which implementation is faster and/or consumes less memory is an open question.
@@ -1503,11 +1498,10 @@ abstract class FirDataFlowAnalyzer(
         val previous = currentSmartCastPosition
         if (previous == flow) return
         receiverStack.forEach {
-            variableStorage.getLocalVariable(it.boundSymbol, isReceiver = true)?.let { variable ->
-                val newStatement = flow?.getTypeStatement(variable)
-                if (newStatement != previous?.getTypeStatement(variable)) {
-                    receiverUpdated(it.boundSymbol, newStatement)
-                }
+            val variable = RealVariable.receiver(it.boundSymbol)
+            val newStatement = flow?.getTypeStatement(variable)
+            if (newStatement != previous?.getTypeStatement(variable)) {
+                receiverUpdated(it.boundSymbol, newStatement)
             }
         }
         currentSmartCastPosition = flow
