@@ -2527,7 +2527,7 @@ class LightTreeRawFirDeclarationBuilder(
             isFromPrimaryConstructor = valueParameterDeclaration == ValueParameterDeclaration.PRIMARY_CONSTRUCTOR,
             additionalAnnotations = additionalAnnotations,
             name = name,
-            defaultValue = firExpression,
+            defaultValue = firExpression ?: createValueParameterStubIfNeeded(functionSymbol),
             containingFunctionSymbol = functionSymbol,
             destructuringDeclaration = destructuringDeclaration
         )

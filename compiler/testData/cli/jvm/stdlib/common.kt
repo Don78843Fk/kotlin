@@ -30,6 +30,24 @@ expect class Int {
 expect class String
 
 @ActualizeByJvmBuiltinProvider
+public expect abstract class Enum<E : Enum<E>>(name: String, ordinal: Int) : Comparable<E> {
+}
+
+enum class TestEnumInCommon {
+    A, B, C
+}
+
+@ActualizeByJvmBuiltinProvider
+public expect open class Throwable() {
+    public open val message: String?
+    public open val cause: Throwable?
+
+    public constructor(message: String?)
+
+    public constructor(cause: Throwable?)
+}
+
+@ActualizeByJvmBuiltinProvider
 public expect class IntArray(size: Int) {
     @Suppress("WRONG_MODIFIER_TARGET")
     public inline constructor(size: Int, init: (Int) -> Int)

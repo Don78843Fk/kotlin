@@ -10,6 +10,7 @@ import com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.*
 import org.jetbrains.kotlin.KtNodeTypes.*
 import org.jetbrains.kotlin.builtins.StandardNames
+import org.jetbrains.kotlin.config.AnalysisFlags
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.EffectiveVisibility
 import org.jetbrains.kotlin.descriptors.Modality
@@ -40,6 +41,7 @@ import org.jetbrains.kotlin.parsing.*
 import org.jetbrains.kotlin.psi.KtPsiUtil
 import org.jetbrains.kotlin.types.ConstantValueKind
 import org.jetbrains.kotlin.util.OperatorNameConventions
+import org.jetbrains.kotlin.utils.addToStdlib.runIf
 import org.jetbrains.kotlin.utils.exceptions.ExceptionAttachmentBuilder
 import org.jetbrains.kotlin.utils.exceptions.errorWithAttachment
 import org.jetbrains.kotlin.utils.exceptions.withPsiEntry
@@ -1145,6 +1147,13 @@ abstract class AbstractRawFirBuilder<T>(val baseSession: FirSession, val context
             diagnostic = ConeSimpleDiagnostic("No type for parameter", DiagnosticKind.ValueParameterWithNoTypeAnnotation)
         }
     }
+
+    protected fun createValueParameterStubIfNeeded(functionSymbol: FirFunctionSymbol<*>?): FirExpression? =
+        runIf(baseSession.languageVersionSettings.getFlag(AnalysisFlags.stdlibCompilation) &&
+                    (functionSymbol as? FirConstructorSymbol)?.callableId?.classId == StandardClassIds.Enum
+        ) {
+            buildExpressionStub()
+        }
 
     enum class ValueParameterDeclaration(val shouldExplicitParameterTypeBePresent: Boolean) {
         FUNCTION(shouldExplicitParameterTypeBePresent = true),

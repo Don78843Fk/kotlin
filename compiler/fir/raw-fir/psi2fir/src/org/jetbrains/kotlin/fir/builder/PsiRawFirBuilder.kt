@@ -672,7 +672,9 @@ open class PsiRawFirBuilder(
 
                 defaultValue = if (hasDefaultValue()) {
                     buildOrLazyExpression(null) { { this@toFirValueParameter.defaultValue }.toFirExpression("Should have default value") }
-                } else null
+                } else {
+                    createValueParameterStubIfNeeded(functionSymbol)
+                }
                 isCrossinline = hasModifier(CROSSINLINE_KEYWORD)
                 isNoinline = hasModifier(NOINLINE_KEYWORD)
                 containingFunctionSymbol = functionSymbol
