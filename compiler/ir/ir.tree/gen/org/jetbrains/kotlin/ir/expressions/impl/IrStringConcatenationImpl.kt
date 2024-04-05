@@ -27,5 +27,5 @@ class IrStringConcatenationImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val arguments: MutableList<IrExpression> = ArrayList()
+    override val arguments: MutableList<IrExpression> = ArrayList(2)
 }

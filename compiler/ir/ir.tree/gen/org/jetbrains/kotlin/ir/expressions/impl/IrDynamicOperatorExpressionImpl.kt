@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.expressions.IrDynamicOperatorExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.IrElementConstructorIndicator
+import org.jetbrains.kotlin.utils.SmartList
 
 class IrDynamicOperatorExpressionImpl internal constructor(
     @Suppress("UNUSED_PARAMETER")
@@ -31,5 +32,5 @@ class IrDynamicOperatorExpressionImpl internal constructor(
 
     override lateinit var receiver: IrExpression
 
-    override val arguments: MutableList<IrExpression> = ArrayList()
+    override val arguments: MutableList<IrExpression> = SmartList()
 }

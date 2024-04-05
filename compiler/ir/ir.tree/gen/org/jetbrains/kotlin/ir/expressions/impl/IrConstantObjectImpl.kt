@@ -30,7 +30,7 @@ class IrConstantObjectImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val valueArguments: MutableList<IrConstantValue> = ArrayList()
+    override val valueArguments: MutableList<IrConstantValue> = SmartList()
 
-    override val typeArguments: MutableList<IrType> = ArrayList()
+    override val typeArguments: MutableList<IrType> = SmartList()
 }

@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.ir.expressions.IrVararg
 import org.jetbrains.kotlin.ir.expressions.IrVarargElement
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.IrElementConstructorIndicator
+import org.jetbrains.kotlin.utils.SmartList
 
 class IrVarargImpl internal constructor(
     @Suppress("UNUSED_PARAMETER")
@@ -28,5 +29,5 @@ class IrVarargImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val elements: MutableList<IrVarargElement> = ArrayList()
+    override val elements: MutableList<IrVarargElement> = SmartList()
 }

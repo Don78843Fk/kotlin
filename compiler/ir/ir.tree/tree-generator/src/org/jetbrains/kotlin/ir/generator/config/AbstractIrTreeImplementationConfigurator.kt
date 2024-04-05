@@ -21,7 +21,7 @@ abstract class AbstractIrTreeImplementationConfigurator : AbstractImplementation
         }
 
     protected fun ImplementationContext.smartList(): String =
-        "SmartList".also {
+        "SmartList()".also {
             additionalImports(ArbitraryImportable("org.jetbrains.kotlin.utils", "SmartList"))
         }
 }

@@ -31,5 +31,5 @@ class IrErrorCallExpressionImpl internal constructor(
 
     override var explicitReceiver: IrExpression? = null
 
-    override val arguments: MutableList<IrExpression> = ArrayList()
+    override val arguments: MutableList<IrExpression> = SmartList()
 }

@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrTry
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.IrElementConstructorIndicator
+import org.jetbrains.kotlin.utils.SmartList
 
 class IrTryImpl internal constructor(
     @Suppress("UNUSED_PARAMETER")
@@ -30,7 +31,7 @@ class IrTryImpl internal constructor(
 
     override lateinit var tryResult: IrExpression
 
-    override val catches: MutableList<IrCatch> = ArrayList()
+    override val catches: MutableList<IrCatch> = SmartList()
 
     override var finallyExpression: IrExpression? = null
 }

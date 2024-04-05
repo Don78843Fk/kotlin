@@ -33,5 +33,5 @@ class IrInlinedFunctionBlockImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val statements: MutableList<IrStatement> = ArrayList()
+    override val statements: MutableList<IrStatement> = ArrayList(2)
 }

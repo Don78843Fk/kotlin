@@ -20,5 +20,5 @@ class IrBlockBodyImpl internal constructor(
     override val startOffset: Int,
     override val endOffset: Int,
 ) : IrBlockBody() {
-    override val statements: MutableList<IrStatement> = ArrayList()
+    override val statements: MutableList<IrStatement> = ArrayList(2)
 }

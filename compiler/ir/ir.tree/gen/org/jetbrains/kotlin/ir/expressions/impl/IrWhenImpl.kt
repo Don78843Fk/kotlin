@@ -29,5 +29,5 @@ class IrWhenImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val branches: MutableList<IrBranch> = ArrayList()
+    override val branches: MutableList<IrBranch> = ArrayList(2)
 }

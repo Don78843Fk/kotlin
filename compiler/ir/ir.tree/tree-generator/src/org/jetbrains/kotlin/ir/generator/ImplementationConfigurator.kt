@@ -202,6 +202,10 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
 
         impl(branch)
 
+        impl(`when`) {
+            default("branches", "ArrayList(2)")
+        }
+
         impl(catch) {
             isLateinit("result")
         }
@@ -209,14 +213,17 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
         impl(`try`) {
             isLateinit("tryResult")
             defaultNull("finallyExpression")
+            default("catches", smartList())
         }
 
         impl(constantObject) {
             default("typeArguments", smartList())
+            default("valueArguments", smartList())
         }
 
         impl(dynamicOperatorExpression) {
             isLateinit("receiver")
+            default("arguments", smartList())
         }
 
         impl(errorCallExpression) {
@@ -243,6 +250,10 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
         }
 
         impl(errorExpression)
+
+        impl(vararg) {
+            default("elements", smartList())
+        }
 
 
         impl(composite) {
@@ -339,7 +350,7 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
     override fun configureAllImplementations(model: Model) {
         configureFieldInAllImplementations(
             fieldName = null,
-            fieldPredicate = { it is ListField && it.isChild && it.listType == StandardTypes.mutableList }
+            fieldPredicate = { it is ListField && it.isChild && it.listType == StandardTypes.mutableList && it.implementationDefaultStrategy?.defaultValue == null }
         ) {
             default(it, "ArrayList()")
         }
