@@ -29,6 +29,12 @@ expect class Int {
 @ActualizeByJvmBuiltinProvider
 expect class String
 
+@ActualizeByJvmBuiltinProvider
+public expect class IntArray(size: Int) {
+    @Suppress("WRONG_MODIFIER_TARGET")
+    public inline constructor(size: Int, init: (Int) -> Int)
+}
+
 annotation class AnnotationWithInt(val value: Int)
 
 @AnnotationWithInt(Int.MAX_VALUE)
