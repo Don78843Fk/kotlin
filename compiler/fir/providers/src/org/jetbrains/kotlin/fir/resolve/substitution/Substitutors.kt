@@ -50,7 +50,10 @@ inline fun ConeCapturedType.substitute(f: (ConeKotlinType) -> ConeKotlinType?): 
             substitutedSuperTypes,
             typeParameterMarker = constructor.typeParameterMarker
         ),
-        lowerType = if (lowerType != null) substitutedInnerType else null
+        lowerType = if (lowerType != null) substitutedInnerType else null,
+        nullability = this.nullability,
+        attributes = attributes,
+        isProjectionNotNull = isProjectionNotNull,
     )
 }
 
