@@ -13,7 +13,8 @@ import org.jetbrains.kotlin.analysis.providers.KotlinAnchorModuleProvider
 import org.jetbrains.kotlin.analysis.providers.topics.*
 
 /**
- * Invalidates [LLFirSession]s which depend on the modified [KtModule].
+ * [LLFirSessionInvalidationService] listens to [modification events][KotlinTopics] and invalidates [LLFirSession]s which depend on the
+ * modified [KtModule].
  * Its invalidation functions should always be invoked in a **write action** because invalidation affects multiple
  * sessions in [LLFirSessionCache] and the cache has to be kept consistent.
  */
