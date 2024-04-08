@@ -120,9 +120,8 @@ class WasmBoxRunner(
 
             val exceptions = vmsToCheck
                 .mapNotNull { vm ->
-                    vm.runWithCathedExceptions(
+                    vm.runWithCaughtExceptions(
                         debugMode = debugMode,
-                        disableExceptions = disableExceptions,
                         useNewExceptionHandling = useNewExceptionProposal,
                         failsIn = failsIn,
                         entryMjs = collectedJsArtifacts.entryPath,
@@ -145,9 +144,8 @@ class WasmBoxRunner(
     }
 }
 
-internal fun WasmVM.runWithCathedExceptions(
+internal fun WasmVM.runWithCaughtExceptions(
     debugMode: DebugMode,
-    disableExceptions: Boolean,
     useNewExceptionHandling: Boolean,
     failsIn: List<String>,
     entryMjs: String?,
@@ -163,7 +161,6 @@ internal fun WasmVM.runWithCathedExceptions(
             jsFilePaths,
             workingDirectory = workingDirectory,
             useNewExceptionHandling = useNewExceptionHandling,
-            disableExceptionHandlingIfPossible = disableExceptions,
         )
         if (shortName in failsIn) {
             return AssertionError("The test expected to fail in ${name}. Please update the testdata.")

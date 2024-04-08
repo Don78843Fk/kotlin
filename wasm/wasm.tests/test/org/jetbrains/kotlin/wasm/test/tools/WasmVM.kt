@@ -21,7 +21,6 @@ internal sealed class WasmVM(val shortName: String) {
         entryMjs: String,
         jsFiles: List<String>,
         workingDirectory: File?,
-        disableExceptionHandlingIfPossible: Boolean = false,
         useNewExceptionHandling: Boolean = false,
         toolArgs: List<String> = emptyList(),
     ): String
@@ -31,7 +30,6 @@ internal sealed class WasmVM(val shortName: String) {
             entryMjs: String,
             jsFiles: List<String>,
             workingDirectory: File?,
-            disableExceptionHandlingIfPossible: Boolean,
             useNewExceptionHandling: Boolean,
             toolArgs: List<String>,
         ) =
@@ -50,14 +48,12 @@ internal sealed class WasmVM(val shortName: String) {
             entryMjs: String,
             jsFiles: List<String>,
             workingDirectory: File?,
-            disableExceptionHandlingIfPossible: Boolean,
             useNewExceptionHandling: Boolean,
             toolArgs: List<String>,
         ) =
             tool.run(
                 *toolArgs.toTypedArray(),
                 "--wasm-verbose",
-                *if (disableExceptionHandlingIfPossible) arrayOf("--no-wasm-exceptions") else emptyArray(),
                 *jsFiles.flatMap { listOf("-f", it) }.toTypedArray(),
                 "--module=$entryMjs",
                 workingDirectory = workingDirectory,
@@ -69,7 +65,6 @@ internal sealed class WasmVM(val shortName: String) {
             entryMjs: String,
             jsFiles: List<String>,
             workingDirectory: File?,
-            disableExceptionHandlingIfPossible: Boolean,
             useNewExceptionHandling: Boolean,
             toolArgs: List<String>
         ) =
