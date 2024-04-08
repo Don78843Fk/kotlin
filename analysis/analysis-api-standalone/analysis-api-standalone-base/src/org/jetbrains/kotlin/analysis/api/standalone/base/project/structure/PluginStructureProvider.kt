@@ -22,10 +22,19 @@ import org.jetbrains.kotlin.analysis.providers.analysisMessageBus
 import org.jetbrains.kotlin.utils.SmartList
 import java.io.InputStream
 
+/**
+ * The Analysis API has an XML-based declaration way to define services, extensions and so on.
+ *
+ * This class provides a way to register such definitions to avoid manual registration in [AnalysisApiStandaloneServiceRegistrar].
+ */
 @Suppress("UnstableApiUsage")
 @KtAnalysisNonPublicApi
 object PluginStructureProvider {
-    private val fakePluginDescriptor = DefaultPluginDescriptor("analysis-api-providers-loader")
+    /**
+     * This fake plugin is required to provide it as a required parameter.
+     * Effectively, it is only used to group project listeners.
+     */
+    private val fakePluginDescriptor = DefaultPluginDescriptor("analysis-api-standalone-base-loader")
 
     private object ReadContext : ReadModuleContext {
         override val interner get() = NoOpXmlInterner
