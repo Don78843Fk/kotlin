@@ -17520,12 +17520,6 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
       }
 
       @Test
-      @TestMetadata("tryFinally.wasm-eh.kt")
-      public void testTryFinally_wasm_eh() {
-        runTest("compiler/testData/codegen/box/finally/tryFinally.wasm-eh.kt");
-      }
-
-      @Test
       @TestMetadata("tryLoopTry.kt")
       public void testTryLoopTry() {
         runTest("compiler/testData/codegen/box/finally/tryLoopTry.kt");
@@ -43515,21 +43509,9 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
       }
 
       @Test
-      @TestMetadata("finally11.wasm-eh.kt")
-      public void testFinally11_wasm_eh() {
-        runTest("compiler/testData/codegen/box/try/finally11.wasm-eh.kt");
-      }
-
-      @Test
       @TestMetadata("finally2.kt")
       public void testFinally2() {
         runTest("compiler/testData/codegen/box/try/finally2.kt");
-      }
-
-      @Test
-      @TestMetadata("finally2.wasm-eh.kt")
-      public void testFinally2_wasm_eh() {
-        runTest("compiler/testData/codegen/box/try/finally2.wasm-eh.kt");
       }
 
       @Test
@@ -43602,12 +43584,6 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
       @TestMetadata("try4.kt")
       public void testTry4() {
         runTest("compiler/testData/codegen/box/try/try4.kt");
-      }
-
-      @Test
-      @TestMetadata("try4.wasm-eh.kt")
-      public void testTry4_wasm_eh() {
-        runTest("compiler/testData/codegen/box/try/try4.wasm-eh.kt");
       }
     }
 
@@ -44616,6 +44592,19 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
       @TestMetadata("volatileString.kt")
       public void testVolatileString() {
         runTest("compiler/testData/codegen/box/volatile/volatileString.kt");
+      }
+    }
+
+    @Nested
+    @TestMetadata("compiler/testData/codegen/box/wasm-new-exception-handling")
+    @TestDataPath("$PROJECT_ROOT")
+    @UseExtTestCaseGroupProvider()
+    @UsePartialLinkage(mode = Mode.DISABLED)
+    @Tag("no-partial-linkage-may-be-skipped")
+    public class Wasm_new_exception_handling {
+      @Test
+      public void testAllFilesPresentInWasm_new_exception_handling() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/wasm-new-exception-handling"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
       }
     }
 
@@ -50787,6 +50776,19 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
       @TestMetadata("varargAndDefaultParameters2.kt")
       public void testVarargAndDefaultParameters2() {
         runTest("compiler/testData/codegen/boxInline/varargs/varargAndDefaultParameters2.kt");
+      }
+    }
+
+    @Nested
+    @TestMetadata("compiler/testData/codegen/boxInline/wasm-new-exception-handling")
+    @TestDataPath("$PROJECT_ROOT")
+    @UseExtTestCaseGroupProvider()
+    @UsePartialLinkage(mode = Mode.DISABLED)
+    @Tag("no-partial-linkage-may-be-skipped")
+    public class Wasm_new_exception_handling {
+      @Test
+      public void testAllFilesPresentInWasm_new_exception_handling() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/boxInline/wasm-new-exception-handling"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
       }
     }
   }

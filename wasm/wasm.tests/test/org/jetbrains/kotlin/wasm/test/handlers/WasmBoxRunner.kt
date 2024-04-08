@@ -119,11 +119,11 @@ class WasmBoxRunner(
             val useNewExceptionProposal = USE_NEW_EXCEPTION_HANDLING_PROPOSAL in testServices.moduleStructure.allDirectives
 
             val exceptions = vmsToCheck
-                .filter { !useNewExceptionProposal || it.isNewExceptionHandlingSupported }
                 .mapNotNull { vm ->
                     vm.runWithCathedExceptions(
                         debugMode = debugMode,
                         disableExceptions = disableExceptions,
+                        useNewExceptionHandling = useNewExceptionProposal,
                         failsIn = failsIn,
                         entryMjs = collectedJsArtifacts.entryPath,
                         jsFilePaths = jsFilePaths,
@@ -148,6 +148,7 @@ class WasmBoxRunner(
 internal fun WasmVM.runWithCathedExceptions(
     debugMode: DebugMode,
     disableExceptions: Boolean,
+    useNewExceptionHandling: Boolean,
     failsIn: List<String>,
     entryMjs: String?,
     jsFilePaths: List<String>,
@@ -161,6 +162,7 @@ internal fun WasmVM.runWithCathedExceptions(
             "./${entryMjs}",
             jsFilePaths,
             workingDirectory = workingDirectory,
+            useNewExceptionHandling = useNewExceptionHandling,
             disableExceptionHandlingIfPossible = disableExceptions,
         )
         if (shortName in failsIn) {

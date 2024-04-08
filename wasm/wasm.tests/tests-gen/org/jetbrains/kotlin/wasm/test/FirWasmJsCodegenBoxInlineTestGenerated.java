@@ -5199,12 +5199,6 @@ public class FirWasmJsCodegenBoxInlineTestGenerated extends AbstractFirWasmJsCod
     }
 
     @Test
-    @TestMetadata("kt5863.wasm-eh.kt")
-    public void testKt5863_wasm_eh() {
-      runTest("compiler/testData/codegen/boxInline/tryCatchFinally/kt5863.wasm-eh.kt");
-    }
-
-    @Test
     @TestMetadata("tryCatch.kt")
     public void testTryCatch() {
       runTest("compiler/testData/codegen/boxInline/tryCatchFinally/tryCatch.kt");
@@ -5217,27 +5211,9 @@ public class FirWasmJsCodegenBoxInlineTestGenerated extends AbstractFirWasmJsCod
     }
 
     @Test
-    @TestMetadata("tryCatch2.wasm-eh.kt")
-    public void testTryCatch2_wasm_eh() {
-      runTest("compiler/testData/codegen/boxInline/tryCatchFinally/tryCatch2.wasm-eh.kt");
-    }
-
-    @Test
     @TestMetadata("tryCatchFinally.kt")
     public void testTryCatchFinally() {
       runTest("compiler/testData/codegen/boxInline/tryCatchFinally/tryCatchFinally.kt");
-    }
-
-    @Test
-    @TestMetadata("tryCatchFinally.wasm-eh.kt")
-    public void testTryCatchFinally_wasm_eh() {
-      runTest("compiler/testData/codegen/boxInline/tryCatchFinally/tryCatchFinally.wasm-eh.kt");
-    }
-
-    @Test
-    @TestMetadata("tryCatch.wasm-eh.kt")
-    public void testTryCatch_wasm_eh() {
-      runTest("compiler/testData/codegen/boxInline/tryCatchFinally/tryCatch.wasm-eh.kt");
     }
   }
 
@@ -5312,6 +5288,40 @@ public class FirWasmJsCodegenBoxInlineTestGenerated extends AbstractFirWasmJsCod
     @TestMetadata("varargAndDefaultParameters2.kt")
     public void testVarargAndDefaultParameters2() {
       runTest("compiler/testData/codegen/boxInline/varargs/varargAndDefaultParameters2.kt");
+    }
+  }
+
+  @Nested
+  @TestMetadata("compiler/testData/codegen/boxInline/wasm-new-exception-handling")
+  @TestDataPath("$PROJECT_ROOT")
+  public class Wasm_new_exception_handling {
+    @Test
+    public void testAllFilesPresentInWasm_new_exception_handling() {
+      KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/boxInline/wasm-new-exception-handling"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.WASM, true);
+    }
+
+    @Test
+    @TestMetadata("kt5863.kt")
+    public void testKt5863() {
+      runTest("compiler/testData/codegen/boxInline/wasm-new-exception-handling/kt5863.kt");
+    }
+
+    @Test
+    @TestMetadata("tryCatch.kt")
+    public void testTryCatch() {
+      runTest("compiler/testData/codegen/boxInline/wasm-new-exception-handling/tryCatch.kt");
+    }
+
+    @Test
+    @TestMetadata("tryCatch2.kt")
+    public void testTryCatch2() {
+      runTest("compiler/testData/codegen/boxInline/wasm-new-exception-handling/tryCatch2.kt");
+    }
+
+    @Test
+    @TestMetadata("tryCatchFinally.kt")
+    public void testTryCatchFinally() {
+      runTest("compiler/testData/codegen/boxInline/wasm-new-exception-handling/tryCatchFinally.kt");
     }
   }
 }

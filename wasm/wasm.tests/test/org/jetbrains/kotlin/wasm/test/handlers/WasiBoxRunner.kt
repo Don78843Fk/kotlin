@@ -85,6 +85,7 @@ class WasiBoxRunner(
                 vm.runWithCathedExceptions(
                     debugMode = debugMode,
                     disableExceptions = false,
+                    useNewExceptionHandling = false,
                     failsIn = failsIn,
                     entryMjs = collectedJsArtifacts.entryPath ?: "test.mjs",
                     jsFilePaths = jsFilePaths,
