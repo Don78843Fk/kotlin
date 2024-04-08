@@ -12,7 +12,6 @@ private object BinaryenUtils {
 
     fun useBinaryenPlugin(project: Project) {
         binaryenPlugin = BinaryenRootPlugin.apply(project.rootProject)
-        binaryenPlugin.version = project.binaryenVersion
     }
 }
 
