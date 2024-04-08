@@ -635,7 +635,7 @@ In combination with '-meta-info', this generates both IR and pre-IR versions of 
 
     @Argument(
         value = "-Xwasm-use-new-exception-proposal",
-        description = "Use the new variant of the exception proposal described here: https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md"
+        description = "Use an updated version of the exception proposal with try_table."
     )
     var wasmUseNewExceptionProposal = false
         set(value) {
