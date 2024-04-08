@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
 package kotlin
 
 import kotlin.internal.PureReifiable
@@ -93,3 +93,4 @@ public inline fun <reified T : Enum<T>> enumValues(): Array<T>
  */
 @SinceKotlin("1.1")
 public inline fun <reified T : Enum<T>> enumValueOf(name: String): T
+*/
