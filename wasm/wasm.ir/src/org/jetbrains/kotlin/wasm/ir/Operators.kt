@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.wasm.ir
 
 import org.jetbrains.kotlin.wasm.ir.WasmImmediateKind.*
+import java.util.EnumSet
 
 enum class WasmImmediateKind {
     CONST_U8,
@@ -408,5 +409,14 @@ enum class WasmOp(
 
 const val WASM_OP_PSEUDO_OPCODE = 0xFFFF
 
+private val tryTableRelatedOpCodes = EnumSet.of(
+    WasmOp.NEW_CATCH,
+    WasmOp.NEW_CATCH_ALL,
+    WasmOp.NEW_CATCH_REF,
+    WasmOp.NEW_CATCH_ALL_REF
+)
+
 val opcodesToOp: Map<Int, WasmOp> =
-    enumValues<WasmOp>().associateBy { it.opcode }
+    enumValues<WasmOp>()
+        .filter { it !in tryTableRelatedOpCodes }
+        .associateBy { it.opcode }
