@@ -61,7 +61,7 @@ where advanced options include:
   -Xwasm-kclass-fqn          Enable support for 'KClass.qualifiedName'.
   -Xwasm-target              Set up the Wasm target (wasm-js or wasm-wasi).
   -Xwasm-use-new-exception-proposal
-                             Use the new variant of the exception proposal described here: https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md
+                             Use an updated version of the exception proposal with try_table.
   -Xwasm-use-traps-instead-of-exceptions
                              Use traps instead of throwing exceptions.
   -Xallow-any-scripts-in-source-roots
