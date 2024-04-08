@@ -21,6 +21,11 @@
         serviceImplementation="org.jetbrains.kotlin.analysis.api.impl.base.references.HLApiReferenceProviderService"
     />
 
+    <projectService
+        serviceInterface="org.jetbrains.kotlin.analysis.providers.KotlinMessageBusProvider"
+        serviceImplementation="org.jetbrains.kotlin.analysis.providers.impl.KotlinProjectMessageBusProvider"
+    />
+
     <java.elementFinder implementation="org.jetbrains.kotlin.asJava.finder.JavaElementFinder"/>
   </extensions>
 </idea-plugin>
