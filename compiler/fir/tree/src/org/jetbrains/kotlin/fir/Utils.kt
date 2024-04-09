@@ -15,10 +15,7 @@ import org.jetbrains.kotlin.fir.declarations.impl.FirDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.utils.isEnumClass
 import org.jetbrains.kotlin.fir.declarations.utils.isStatic
-import org.jetbrains.kotlin.fir.expressions.FirBlock
-import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
-import org.jetbrains.kotlin.fir.expressions.FirFunctionCallOrigin
+import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.renderer.FirRenderer
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirCallableSymbol
@@ -289,4 +286,13 @@ fun FirBasedSymbol<*>.packageFqName(): FqName {
         is FirCallableSymbol<*> -> callableId.packageName
         else -> error("No package fq name for $this")
     }
+}
+
+fun FirOperation.toArrayAugmentedAssignSourceKind() = when (this) {
+    FirOperation.PLUS_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayPlusAssign
+    FirOperation.MINUS_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayMinusAssign
+    FirOperation.TIMES_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayTimesAssign
+    FirOperation.DIV_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayDivAssign
+    FirOperation.REM_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayRemAssign
+    else -> error("Unexpected operator: $name")
 }

@@ -756,6 +756,7 @@ private val PREFIX_POSTFIX_ORIGIN_MAP: Map<NameWithElementType, IrStatementOrigi
 
 fun FirVariableAssignment.getIrAssignmentOrigin(): IrStatementOrigin {
     incOrDeclSourceKindToIrStatementOrigin[source?.kind]?.let { return it }
+    augmentedArrayAssignSourceKindToIrStatementOrigin[source?.kind]?.let { return it }
     val callableName = getCallableNameFromIntClassIfAny() ?: return IrStatementOrigin.EQ
     PREFIX_POSTFIX_ORIGIN_MAP[callableName to source?.elementType]?.let { return it }
 

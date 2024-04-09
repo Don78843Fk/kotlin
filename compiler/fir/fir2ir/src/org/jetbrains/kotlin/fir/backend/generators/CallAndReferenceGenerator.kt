@@ -527,6 +527,7 @@ class CallAndReferenceGenerator(
                                 typeArgumentsCount = property.typeParameters.size,
                                 valueArgumentsCount = property.contextReceivers.size,
                                 origin = incOrDeclSourceKindToIrStatementOrigin[qualifiedAccess.source?.kind]
+                                    ?: augmentedArrayAssignSourceKindToIrStatementOrigin[qualifiedAccess.source?.kind]
                                     ?: IrStatementOrigin.GET_PROPERTY,
                                 superQualifierSymbol = dispatchReceiver?.superQualifierSymbol()
                             )

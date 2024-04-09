@@ -638,6 +638,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         data: ResolutionMode
     ): FirStatement = whileAnalysing(session, assignmentOperatorStatement) {
         val operation = assignmentOperatorStatement.operation
+        val fakeSourceKind = operation.toArrayAugmentedAssignSourceKind()
         require(operation != FirOperation.ASSIGN)
 
         assignmentOperatorStatement.transformAnnotations(transformer, ResolutionMode.ContextIndependent)
@@ -710,7 +711,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
             val assignment =
                 buildVariableAssignment {
-                    source = assignmentOperatorStatement.source
+                    source = assignmentOperatorStatement.source?.fakeElement(fakeSourceKind)
                     lValue = assignmentLeftArgument
                     rValue = resolvedOperatorCall
                     annotations += assignmentOperatorStatement.annotations
@@ -1799,15 +1800,6 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         } ?: typeFromCallee.type
     }
 
-}
-
-private fun FirOperation.toArrayAugmentedAssignSourceKind() = when (this) {
-    PLUS_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayPlusAssign
-    MINUS_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayMinusAssign
-    TIMES_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayTimesAssign
-    DIV_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayDivAssign
-    REM_ASSIGN -> KtFakeSourceElementKind.DesugaredArrayRemAssign
-    else -> error("Unexpected operator: $name")
 }
 
 private fun FirFunctionCall.setArrayAugmentedAssignSource(operation: FirOperation) {
