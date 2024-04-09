@@ -548,6 +548,13 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
             else {
                 var functionalSupertype: KotlinTypeMarker? = null
                 simpleType.anySuperTypeConstructor { type ->
+                    // This check is necessary for captured types.
+                    // The condition above will be false, but we can receive a function type as supertype from the captured constructor.
+                    if (simpleType !is ConeClassLikeType && (type as ConeKotlinType).isSomeFunctionType(session)) {
+                        functionalSupertype = type
+                        return@anySuperTypeConstructor true
+                    }
+
                     simpleType.fastCorrespondingSupertypes(type.typeConstructor())?.any { superType ->
                         val isFunction = (superType as ConeKotlinType).isSomeFunctionType(session)
                         if (isFunction) {
@@ -558,8 +565,8 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
                 }
                 functionalSupertype
                     ?: errorWithAttachment("Failed to find functional supertype for ${simpleType::class.java}") {
-                    withConeTypeEntry("type", simpleType)
-                }
+                        withConeTypeEntry("type", simpleType)
+                    }
             }
         }
     }
