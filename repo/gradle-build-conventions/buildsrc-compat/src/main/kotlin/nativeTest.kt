@@ -100,11 +100,14 @@ fun Project.nativeTest(
     customTestDependencies: List<Configuration> = emptyList(),
     compilerPluginDependencies: List<Configuration> = emptyList(),
     allowParallelExecution: Boolean = true,
+    jUnitMode: JUnitMode = JUnitMode.JUnit5,
+    defineJDKEnvVariables: List<JdkMajorVersion> = emptyList(),
     body: Test.() -> Unit = {},
 ) = projectTest(
     taskName,
-    jUnitMode = JUnitMode.JUnit5,
-    maxHeapSizeMb = 3072 // Extra heap space for Kotlin/Native compiler.
+    jUnitMode = jUnitMode,
+    maxHeapSizeMb = 3072, // Extra heap space for Kotlin/Native compiler.
+    defineJDKEnvVariables = defineJDKEnvVariables,
 ) {
     group = "verification"
 
@@ -209,8 +212,14 @@ fun Project.nativeTest(
         // Pass the current Gradle task name so test can use it in logging.
         environment("GRADLE_TASK_NAME", path)
 
-        useJUnitPlatform {
-            tag?.let { includeTags(it) }
+        tag?.let {
+            if (jUnitMode != JUnitMode.JUnit5) {
+                throw GradleException("Tags can only be used with JUnit5")
+            }
+
+            useJUnitPlatform {
+                includeTags(tag)
+            }
         }
 
         if (!allowParallelExecution) {

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.kotlinNativeDist
+
 plugins {
     kotlin("jvm")
     id("jps-compatible")
@@ -15,6 +17,7 @@ dependencies {
     testApi(projectTests(":compiler:tests-common-new"))
     testApi(projectTests(":compiler:test-infrastructure"))
     testApi(project(":native:kotlin-native-utils"))
+    testApi(project(":native:cli-native"))
     testApi(project(":native:executors"))
 
     testImplementation(projectTests(":generators:test-generator"))
@@ -62,6 +65,16 @@ val testTags = findProperty("kotlin.native.tests.tags")?.toString()
 // Note: arbitrary JUnit tag expressions can be used in this property.
 // See https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
 val test by nativeTest("test", testTags, requirePlatformLibs = true)
+
+val cliTest by nativeTest(
+    "cliTest",
+    null,
+    jUnitMode = JUnitMode.JUnit4,
+    defineJDKEnvVariables = listOf(JdkMajorVersion.JDK_1_8, JdkMajorVersion.JDK_11_0, JdkMajorVersion.JDK_17_0),
+) {
+    include("org/jetbrains/kotlin/konan/test/cli/*")
+}
+
 
 val generateTests by generator("org.jetbrains.kotlin.generators.tests.GenerateNativeTestsKt") {
     javaLauncher.set(project.getToolchainLauncherFor(JdkMajorVersion.JDK_11_0))
