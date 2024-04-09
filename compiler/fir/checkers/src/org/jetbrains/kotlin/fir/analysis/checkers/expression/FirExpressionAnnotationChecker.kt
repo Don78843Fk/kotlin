@@ -20,9 +20,10 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.isJavaOrEnhancement
 import org.jetbrains.kotlin.fir.expressions.FirBlock
+import org.jetbrains.kotlin.fir.expressions.FirDesugaredAssignmentValueReferenceExpression
 import org.jetbrains.kotlin.fir.expressions.FirErrorExpression
-import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.FirStatement
+import org.jetbrains.kotlin.fir.expressions.FirVariableAssignment
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
@@ -33,11 +34,15 @@ object FirExpressionAnnotationChecker : FirBasicExpressionChecker(MppCheckerKind
         // Declarations are checked separately
         // See KT-33658 about annotations on non-expression statements
         if (expression is FirDeclaration ||
-            expression !is FirExpression ||
             expression is FirErrorExpression ||
             expression is FirBlock && (expression.source?.kind == KtRealSourceElementKind ||
                     expression.source?.kind == KtFakeSourceElementKind.DesugaredForLoop)
         ) return
+
+        // To prevent double-reporting (we have also a call in this case)
+        if (expression is FirVariableAssignment && expression.lValue is FirDesugaredAssignmentValueReferenceExpression) {
+            return
+        }
 
         val annotations = expression.annotations
         if (annotations.isEmpty()) return
