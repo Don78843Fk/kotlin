@@ -18,10 +18,13 @@ import org.jetbrains.kotlin.fir.analysis.checkers.getAllowedAnnotationTargets
 import org.jetbrains.kotlin.fir.analysis.checkers.getDefaultUseSiteTarget
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
+import org.jetbrains.kotlin.fir.declarations.isJavaOrEnhancement
 import org.jetbrains.kotlin.fir.expressions.FirBlock
 import org.jetbrains.kotlin.fir.expressions.FirErrorExpression
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.FirStatement
+import org.jetbrains.kotlin.fir.resolve.toSymbol
+import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
 import org.jetbrains.kotlin.fir.types.coneType
 
@@ -43,9 +46,13 @@ object FirExpressionAnnotationChecker : FirBasicExpressionChecker(MppCheckerKind
 
         for (annotation in annotations) {
             val useSiteTarget = annotation.useSiteTarget ?: expression.getDefaultUseSiteTarget(annotation, context)
-            val existingTargetsForAnnotation = annotationsMap.getOrPut(annotation.annotationTypeRef.coneType) { arrayListOf() }
+            val annotationType = annotation.annotationTypeRef.coneType
+            val existingTargetsForAnnotation = annotationsMap.getOrPut(annotationType) { arrayListOf() }
 
-            if (KotlinTarget.EXPRESSION !in annotation.getAllowedAnnotationTargets(context.session)) {
+            // In KT-67014, we decided to allow EXPRESSION targets for Java annotations
+            if ((annotationType as? ConeClassLikeType)?.lookupTag?.toSymbol(context.session)?.isJavaOrEnhancement != true &&
+                KotlinTarget.EXPRESSION !in annotation.getAllowedAnnotationTargets(context.session)
+            ) {
                 reporter.reportOn(annotation.source, FirErrors.WRONG_ANNOTATION_TARGET, "expression", context)
             }
 
