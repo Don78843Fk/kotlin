@@ -490,7 +490,7 @@ class CallAndReferenceGenerator(
                      */
                     if (
                         explicitReceiverExpression != null &&
-                        calleeReference.source?.kind is KtFakeSourceElementKind.DesugaredCompoundAssignment &&
+                        calleeReference.source?.kind is KtFakeSourceElementKind.DesugaredArrayAugmentedAssign &&
                         callOrigin != null
                     ) {
                         explicitReceiverExpression.updateStatementOrigin(callOrigin)

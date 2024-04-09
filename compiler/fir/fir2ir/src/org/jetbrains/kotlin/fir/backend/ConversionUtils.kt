@@ -550,16 +550,6 @@ internal fun FirReference.statementOrigin(): IrStatementOrigin? = when (this) {
             source?.kind is KtFakeSourceElementKind.DesugaredComponentFunctionCall ->
                 IrStatementOrigin.COMPONENT_N.withIndex(name.asString().removePrefix(DATA_CLASS_COMPONENT_PREFIX).toInt())
 
-            source?.kind is KtFakeSourceElementKind.DesugaredCompoundAssignment -> when (name) {
-                OperatorNameConventions.PLUS_ASSIGN, OperatorNameConventions.PLUS -> IrStatementOrigin.PLUSEQ
-                OperatorNameConventions.MINUS_ASSIGN, OperatorNameConventions.MINUS -> IrStatementOrigin.MINUSEQ
-                OperatorNameConventions.TIMES_ASSIGN, OperatorNameConventions.TIMES -> IrStatementOrigin.MULTEQ
-                OperatorNameConventions.DIV_ASSIGN, OperatorNameConventions.DIV -> IrStatementOrigin.DIVEQ
-                OperatorNameConventions.MOD_ASSIGN, OperatorNameConventions.MOD,
-                OperatorNameConventions.REM_ASSIGN, OperatorNameConventions.REM -> IrStatementOrigin.PERCEQ
-                else -> null
-            }
-
             source?.kind is KtFakeSourceElementKind.DesugaredArrayAugmentedAssign ->
                 augmentedArrayAssignSourceKindToIrStatementOrigin[source?.kind]
 
@@ -766,14 +756,6 @@ fun FirVariableAssignment.getIrAssignmentOrigin(): IrStatementOrigin {
     return when (kind) {
         KtFakeSourceElementKind.DesugaredPrefixInc, KtFakeSourceElementKind.DesugaredPostfixInc -> IrStatementOrigin.PLUSEQ
         KtFakeSourceElementKind.DesugaredPrefixDec, KtFakeSourceElementKind.DesugaredPostfixDec -> IrStatementOrigin.MINUSEQ
-        KtFakeSourceElementKind.DesugaredCompoundAssignment -> when (callableName) {
-            OperatorNameConventions.PLUS -> IrStatementOrigin.PLUSEQ
-            OperatorNameConventions.MINUS -> IrStatementOrigin.MINUSEQ
-            OperatorNameConventions.TIMES -> IrStatementOrigin.MULTEQ
-            OperatorNameConventions.DIV -> IrStatementOrigin.DIVEQ
-            OperatorNameConventions.REM, OperatorNameConventions.MOD -> IrStatementOrigin.PERCEQ
-            else -> IrStatementOrigin.EQ
-        }
         else -> IrStatementOrigin.EQ
     }
 }

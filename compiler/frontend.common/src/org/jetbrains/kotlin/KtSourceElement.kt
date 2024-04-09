@@ -191,10 +191,6 @@ sealed class KtFakeSourceElementKind(final override val shouldSkipErrorTypeRepor
     // and it have a fake source
     object DesugaredSafeCallExpression : KtFakeSourceElementKind()
 
-    // a += 2 --> a = a + 2
-    // where a + 2 will have a fake source
-    object DesugaredCompoundAssignment : KtFakeSourceElementKind()
-
     // `a > b` will be wrapped in FirComparisonExpression
     // with real source which points to initial `a > b` expression
     // and inner FirFunctionCall will refer to a fake source

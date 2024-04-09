@@ -6,7 +6,8 @@
 package org.jetbrains.kotlin.analysis.api.fir.components
 
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.KtFakeSourceElementKind.*
+import org.jetbrains.kotlin.KtFakeSourceElementKind.DesugaredArrayAugmentedAssign
+import org.jetbrains.kotlin.KtFakeSourceElementKind.DesugaredIncrementOrDecrement
 import org.jetbrains.kotlin.analysis.api.KtAnalysisNonPublicApi
 import org.jetbrains.kotlin.analysis.api.components.KtDataFlowExitPointSnapshot
 import org.jetbrains.kotlin.analysis.api.components.KtDataFlowExitPointSnapshot.VariableReassignment
@@ -20,52 +21,14 @@ import org.jetbrains.kotlin.analysis.utils.errors.withKtModuleEntry
 import org.jetbrains.kotlin.analysis.utils.printer.parentsOfType
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.isLocalMember
-import org.jetbrains.kotlin.fir.declarations.FirAnonymousFunction
-import org.jetbrains.kotlin.fir.declarations.FirConstructor
-import org.jetbrains.kotlin.fir.declarations.FirControlFlowGraphOwner
-import org.jetbrains.kotlin.fir.declarations.FirErrorFunction
-import org.jetbrains.kotlin.fir.declarations.FirErrorPrimaryConstructor
-import org.jetbrains.kotlin.fir.declarations.FirFunction
-import org.jetbrains.kotlin.fir.declarations.FirPropertyAccessor
-import org.jetbrains.kotlin.fir.declarations.FirSimpleFunction
-import org.jetbrains.kotlin.fir.expressions.FirBlock
-import org.jetbrains.kotlin.fir.expressions.FirBreakExpression
-import org.jetbrains.kotlin.fir.expressions.FirContinueExpression
-import org.jetbrains.kotlin.fir.expressions.FirErrorExpression
-import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirJump
-import org.jetbrains.kotlin.fir.expressions.FirLoop
-import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
-import org.jetbrains.kotlin.fir.expressions.FirReturnExpression
-import org.jetbrains.kotlin.fir.expressions.FirThrowExpression
-import org.jetbrains.kotlin.fir.expressions.FirVariableAssignment
+import org.jetbrains.kotlin.fir.declarations.*
+import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.impl.FirUnitExpression
-import org.jetbrains.kotlin.fir.expressions.toResolvedCallableSymbol
 import org.jetbrains.kotlin.fir.psi
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.AnonymousObjectExpressionExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.CFGNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.CFGNodeWithSubgraphs
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ControlFlowGraph
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.DelegateExpressionExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ElvisExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ElvisLhsExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ExitNodeMarker
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ExitSafeCallNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.ExitValueParameterNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.LocalClassExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.PostponedLambdaExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.SmartCastExpressionExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.StubNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.WhenBranchResultExitNode
-import org.jetbrains.kotlin.fir.resolve.dfa.cfg.WhenSubjectExpressionExitNode
+import org.jetbrains.kotlin.fir.resolve.dfa.cfg.*
 import org.jetbrains.kotlin.fir.resolve.dfa.controlFlowGraph
 import org.jetbrains.kotlin.fir.symbols.impl.FirVariableSymbol
-import org.jetbrains.kotlin.fir.types.ConeKotlinType
-import org.jetbrains.kotlin.fir.types.commonSuperTypeOrNull
-import org.jetbrains.kotlin.fir.types.isNothing
-import org.jetbrains.kotlin.fir.types.isUnit
-import org.jetbrains.kotlin.fir.types.resolvedType
-import org.jetbrains.kotlin.fir.types.typeContext
+import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.fir.utils.exceptions.withFirEntry
 import org.jetbrains.kotlin.fir.visitors.FirDefaultVisitorVoid
 import org.jetbrains.kotlin.psi.KtDeclaration
@@ -74,7 +37,6 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtReturnExpression
 import org.jetbrains.kotlin.utils.exceptions.errorWithAttachment
 import org.jetbrains.kotlin.utils.exceptions.withPsiEntry
-import java.util.ArrayList
 import kotlin.math.sign
 
 @OptIn(KtAnalysisNonPublicApi::class)
@@ -361,7 +323,7 @@ internal class KtFirDataFlowInfoProvider(override val analysisSession: KtFirAnal
             val targetSource = lValue.source
             if (targetSource != null) {
                 when (targetSource.kind) {
-                    is DesugaredCompoundAssignment, is DesugaredIncrementOrDecrement -> return true
+                    is DesugaredArrayAugmentedAssign, is DesugaredIncrementOrDecrement -> return true
                     else -> {}
                 }
             }

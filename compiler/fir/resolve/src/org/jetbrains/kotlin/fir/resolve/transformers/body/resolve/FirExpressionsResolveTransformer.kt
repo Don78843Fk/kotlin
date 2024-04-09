@@ -57,6 +57,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     private val expressionResolutionExtensions = session.extensionService.expressionResolutionExtensions.takeIf { it.isNotEmpty() }
     private val assignAltererExtensions = session.extensionService.assignAltererExtensions.takeIf { it.isNotEmpty() }
+
     @OptIn(FirExtensionApiInternals::class)
     private val callRefinementExtensions = session.extensionService.callRefinementExtensions.takeIf { it.isNotEmpty() }
 
@@ -151,7 +152,8 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
                 qualifiedAccessExpression
             }
             is FirResolvedNamedReference,
-            is FirErrorNamedReference -> {
+            is FirErrorNamedReference,
+            -> {
                 if (!qualifiedAccessExpression.isResolved) {
                     storeTypeFromCallee(qualifiedAccessExpression, isLhsOfAssignment = false)
                 }
@@ -243,7 +245,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformPropertyAccessExpression(
         propertyAccessExpression: FirPropertyAccessExpression,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement {
         return transformQualifiedAccessExpression(propertyAccessExpression, data)
     }
@@ -263,7 +265,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
     fun transformSuperReceiver(
         superReference: FirSuperReference,
         superReferenceContainer: FirQualifiedAccessExpression,
-        containingCall: FirQualifiedAccessExpression?
+        containingCall: FirQualifiedAccessExpression?,
     ): FirQualifiedAccessExpression {
         val labelName = superReference.labelName
         val lastDispatchReceiver = implicitReceiverStack.lastDispatchReceiver()
@@ -346,7 +348,8 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
                         diagnostic =
                             ConeUnreportedDuplicateDiagnostic(ConeSimpleDiagnostic("Unresolved super method", DiagnosticKind.Other))
                     }
-                    1 -> types.single().toFirResolvedTypeRef(superReferenceContainer.source?.fakeElement(KtFakeSourceElementKind.SuperCallImplicitType))
+                    1 -> types.single()
+                        .toFirResolvedTypeRef(superReferenceContainer.source?.fakeElement(KtFakeSourceElementKind.SuperCallImplicitType))
                     else -> buildErrorTypeRef {
                         source = superReferenceContainer.source
                         diagnostic = ConeAmbiguousSuper(types)
@@ -362,7 +365,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
     private fun markSuperReferenceError(
         superNotAvailableDiagnostic: ConeDiagnostic,
         superReferenceContainer: FirQualifiedAccessExpression,
-        superReference: FirSuperReference
+        superReference: FirSuperReference,
     ): FirQualifiedAccessExpression {
         val resultType = buildErrorTypeRef {
             diagnostic = superNotAvailableDiagnostic
@@ -382,7 +385,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformSafeCallExpression(
         safeCallExpression: FirSafeCallExpression,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement {
         whileAnalysing(session, safeCallExpression) {
             withContainingSafeCallExpression(safeCallExpression) {
@@ -418,7 +421,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformCheckedSafeCallSubject(
         checkedSafeCallSubject: FirCheckedSafeCallSubject,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement {
         return checkedSafeCallSubject
     }
@@ -478,7 +481,9 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
                 // and 'someDelegate' explicit receiver is resolved at 1st stage
                 // See also FirDeclarationsResolveTransformer.transformWrappedDelegateExpression
                 val withResolvedExplicitReceiver =
-                    if (callResolutionMode == CallResolutionMode.PROVIDE_DELEGATE) functionCall else transformExplicitReceiverOf(functionCall)
+                    if (callResolutionMode == CallResolutionMode.PROVIDE_DELEGATE) functionCall else transformExplicitReceiverOf(
+                        functionCall
+                    )
                 withResolvedExplicitReceiver.also {
                     dataFlowAnalyzer.exitCallExplicitReceiver()
                     it.replaceArgumentList(it.argumentList.transform(this, ResolutionMode.ContextDependent))
@@ -624,7 +629,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformComparisonExpression(
         comparisonExpression: FirComparisonExpression,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, comparisonExpression) {
         return (comparisonExpression.transformChildren(transformer, ResolutionMode.ContextIndependent) as FirComparisonExpression).also {
             it.resultType = builtinTypes.booleanType.type
@@ -635,7 +640,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
     @OptIn(FirContractViolation::class)
     override fun transformAssignmentOperatorStatement(
         assignmentOperatorStatement: FirAssignmentOperatorStatement,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, assignmentOperatorStatement) {
         val operation = assignmentOperatorStatement.operation
         val fakeSourceKind = operation.toArrayAugmentedAssignSourceKind()
@@ -657,13 +662,13 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         )
 
         // x.plusAssign(y)
-        val assignOperatorCall = generator.createAssignOperatorCall(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+        val assignOperatorCall = generator.createAssignOperatorCall(fakeSourceKind)
         val resolvedAssignCall = assignOperatorCall.resolveCandidateForAssignmentOperatorCall()
         val assignCallReference = resolvedAssignCall.calleeReference as? FirNamedReferenceWithCandidate
         val assignIsSuccessful = assignCallReference?.isError == false
 
         // x = x + y
-        val simpleOperatorCall = generator.createSimpleOperatorCall(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+        val simpleOperatorCall = generator.createSimpleOperatorCall(fakeSourceKind)
         val resolvedOperatorCall = simpleOperatorCall.resolveCandidateForAssignmentOperatorCall()
         val operatorCallReference = resolvedOperatorCall.calleeReference as? FirNamedReferenceWithCandidate
         val operatorIsSuccessful = operatorCallReference?.isError == false
@@ -702,7 +707,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
             )
             dataFlowAnalyzer.exitFunctionCall(resolvedOperatorCall, callCompleted = true)
 
-            val leftArgumentDesugaredSource = leftArgument.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+            val leftArgumentDesugaredSource = leftArgument.source?.fakeElement(fakeSourceKind)
             val unwrappedLeftArgument = leftArgument.unwrapSmartcastExpression()
             val assignmentLeftArgument = buildDesugaredAssignmentValueReferenceExpression {
                 expressionRef = FirExpressionRef<FirExpression>().apply { bind(unwrappedLeftArgument) }
@@ -721,7 +726,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
                 generateExplicitReceiverTemporaryVariable(session, unwrappedLeftArgument, leftArgumentDesugaredSource)
             return if (receiverTemporaryVariable != null) {
                 buildBlock {
-                    source = assignmentOperatorStatement.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+                    source = assignmentOperatorStatement.source?.fakeElement(fakeSourceKind)
                     annotations += assignmentOperatorStatement.annotations
 
                     statements += receiverTemporaryVariable
@@ -766,7 +771,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
     @OptIn(FirContractViolation::class)
     override fun transformIncrementDecrementExpression(
         incrementDecrementExpression: FirIncrementDecrementExpression,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement {
         val fakeSourceKind = sourceKindForIncOrDec(incrementDecrementExpression.operationName, incrementDecrementExpression.isPrefix)
         incrementDecrementExpression.transformAnnotations(transformer, ResolutionMode.ContextIndependent)
@@ -864,7 +869,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformEqualityOperatorCall(
         equalityOperatorCall: FirEqualityOperatorCall,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, equalityOperatorCall) {
         val arguments = equalityOperatorCall.argumentList.arguments
         require(arguments.size == 2) {
@@ -1150,7 +1155,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformGetClassCall(
         getClassCall: FirGetClassCall,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, getClassCall) {
         getClassCall.transformAnnotations(transformer, ResolutionMode.ContextIndependent)
         val arg = getClassCall.argument
@@ -1286,7 +1291,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformAnnotationCall(
         annotationCall: FirAnnotationCall,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, annotationCall) {
         if (annotationCall.resolved) return annotationCall
         annotationCall.transformAnnotationTypeRef(transformer, ResolutionMode.ContextIndependent)
@@ -1411,7 +1416,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         val referenceSource: KtSourceElement?,
         val operation: FirOperation,
         val lhs: FirExpression,
-        val rhs: FirExpression
+        val rhs: FirExpression,
     ) {
         companion object {
             fun createFunctionCall(
@@ -1420,7 +1425,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
                 referenceSource: KtSourceElement?,
                 annotations: List<FirAnnotation>,
                 receiver: FirExpression,
-                vararg arguments: FirExpression
+                vararg arguments: FirExpression,
             ): FirFunctionCall = buildFunctionCall {
                 this.source = source
                 explicitReceiver = receiver
@@ -1462,7 +1467,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformAugmentedArraySetCall(
         augmentedArraySetCall: FirAugmentedArraySetCall,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, augmentedArraySetCall) {
         /*
          * a[b] += c can be desugared to:
@@ -1475,12 +1480,14 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         assert(operation in FirOperation.ASSIGNMENTS)
         assert(operation != FirOperation.ASSIGN)
 
+        val fakeSourceElementKind = operation.toArrayAugmentedAssignSourceKind()
+
         augmentedArraySetCall.transformAnnotations(transformer, data)
 
         dataFlowAnalyzer.enterCallArguments(augmentedArraySetCall, listOf(augmentedArraySetCall.rhs))
         // transformedLhsCall: a.get(index)
         val transformedLhsCall = augmentedArraySetCall.lhsGetCall.transformSingle(transformer, ResolutionMode.ContextIndependent)
-            .also { it.setArrayAugmentedAssignSource(operation) }
+            .also { it.setArrayAugmentedAssignSource(operation, fakeSourceElementKind) }
         val transformedRhs = augmentedArraySetCall.rhs.transformSingle(transformer, ResolutionMode.ContextDependent)
         dataFlowAnalyzer.exitCallArguments()
 
@@ -1510,7 +1517,8 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         }
 
         // <array>.set(<index_i>, <array>.get(<index_i>).plus(c))
-        val info = tryResolveAugmentedArraySetCallAsSetGetBlock(augmentedArraySetCall, transformedLhsCall, transformedRhs)
+        val info =
+            tryResolveAugmentedArraySetCallAsSetGetBlock(augmentedArraySetCall, transformedLhsCall, transformedRhs, fakeSourceElementKind)
 
         val resolvedOperatorCall = info.operatorCall
         val operatorCallReference = resolvedOperatorCall.calleeReference as? FirNamedReferenceWithCandidate
@@ -1544,7 +1552,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
         fun reportAmbiguity(
             firstReference: FirNamedReferenceWithCandidate?,
-            secondReference: FirNamedReferenceWithCandidate?
+            secondReference: FirNamedReferenceWithCandidate?,
         ): FirStatement {
             val firstCandidate = firstReference?.candidate
             val secondCandidate = secondReference?.candidate
@@ -1582,7 +1590,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         val arrayVariable: FirProperty,
         val indexVariables: List<FirProperty>,
         val operatorCall: FirFunctionCall,
-        val setCall: FirFunctionCall
+        val setCall: FirFunctionCall,
     ) {
         fun toBlock(): FirBlock {
             return buildBlock {
@@ -1600,19 +1608,20 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
     private fun tryResolveAugmentedArraySetCallAsSetGetBlock(
         augmentedArraySetCall: FirAugmentedArraySetCall,
         lhsGetCall: FirFunctionCall,
-        transformedRhs: FirExpression
+        transformedRhs: FirExpression,
+        fakeSourceElementKind: KtFakeSourceElementKind,
     ): AugmentedArraySetAsGetSetCallDesugaringInfo {
         val initializer = lhsGetCall.explicitReceiver ?: buildErrorExpression {
             source = augmentedArraySetCall.source
-                ?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+                ?.fakeElement(fakeSourceElementKind)
             diagnostic = ConeSyntaxDiagnostic("No receiver for array access")
         }
         val arrayVariable = generateTemporaryVariable(
             session.moduleData,
-            source = lhsGetCall.explicitReceiver?.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment),
+            source = lhsGetCall.explicitReceiver?.source?.fakeElement(fakeSourceElementKind),
             name = SpecialNames.ARRAY,
             initializer = initializer,
-            typeRef = initializer.resolvedType.toFirResolvedTypeRef(initializer.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)),
+            typeRef = initializer.resolvedType.toFirResolvedTypeRef(initializer.source?.fakeElement(fakeSourceElementKind)),
         )
 
         val flattenedGetCallArguments = buildList {
@@ -1631,7 +1640,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
             val unwrappedSamIndex = (index as? FirSamConversionExpression)?.expression ?: index
             generateTemporaryVariable(
                 session.moduleData,
-                source = unwrappedSamIndex.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment),
+                source = unwrappedSamIndex.source?.fakeElement(fakeSourceElementKind),
                 name = SpecialNames.subscribeOperatorIndex(i),
                 initializer = unwrappedSamIndex,
                 typeRef = unwrappedSamIndex.resolvedType.toFirResolvedTypeRef(),
@@ -1656,7 +1665,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
         }
 
         val getCall = buildFunctionCall {
-            source = augmentedArraySetCall.arrayAccessSource?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+            source = augmentedArraySetCall.arrayAccessSource?.fakeElement(fakeSourceElementKind)
             explicitReceiver = arrayAccess
             if (lhsGetCall.explicitReceiver == lhsGetCall.dispatchReceiver) {
                 dispatchReceiver = arrayAccess
@@ -1757,7 +1766,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformStringConcatenationCall(
         stringConcatenationCall: FirStringConcatenationCall,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement = whileAnalysing(session, stringConcatenationCall) {
         dataFlowAnalyzer.enterStringConcatenationCall()
         stringConcatenationCall.transformChildren(transformer, ResolutionMode.ContextIndependent)
@@ -1779,7 +1788,7 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
     override fun transformAnonymousFunctionExpression(
         anonymousFunctionExpression: FirAnonymousFunctionExpression,
-        data: ResolutionMode
+        data: ResolutionMode,
     ): FirStatement {
         dataFlowAnalyzer.enterAnonymousFunctionExpression(anonymousFunctionExpression)
         return anonymousFunctionExpression.transformAnonymousFunction(transformer, data)
@@ -1802,9 +1811,9 @@ open class FirExpressionsResolveTransformer(transformer: FirAbstractBodyResolveT
 
 }
 
-private fun FirFunctionCall.setArrayAugmentedAssignSource(operation: FirOperation) {
+private fun FirFunctionCall.setArrayAugmentedAssignSource(operation: FirOperation, fakeSourceElementKind: KtFakeSourceElementKind) {
     if (calleeReference.isError()) return
-    val newSource = source?.fakeElement(operation.toArrayAugmentedAssignSourceKind())
+    val newSource = source?.fakeElement(fakeSourceElementKind)
     @OptIn(FirImplementationDetail::class)
     replaceSource(newSource)
     val oldCalleeReference = calleeReference as? FirResolvedNamedReference

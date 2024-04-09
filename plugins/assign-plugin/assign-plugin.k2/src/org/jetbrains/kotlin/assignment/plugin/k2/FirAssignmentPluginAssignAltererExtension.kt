@@ -5,8 +5,6 @@
 
 package org.jetbrains.kotlin.assignment.plugin.k2
 
-import org.jetbrains.kotlin.KtFakeSourceElementKind
-import org.jetbrains.kotlin.fakeElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.builder.buildFunctionCall
@@ -51,7 +49,7 @@ class FirAssignmentPluginAssignAltererExtension(
         val leftResolvedType = leftSymbol.resolvedReturnTypeRef
         val rightArgument = variableAssignment.rValue
         return buildFunctionCall {
-            source = variableAssignment.source?.fakeElement(KtFakeSourceElementKind.DesugaredCompoundAssignment)
+            source = variableAssignment.source
             explicitReceiver = buildPropertyAccessExpression {
                 source = leftArgument.source
                 coneTypeOrNull = leftResolvedType.type

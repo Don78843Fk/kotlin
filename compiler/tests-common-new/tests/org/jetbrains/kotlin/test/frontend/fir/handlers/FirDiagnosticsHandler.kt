@@ -450,7 +450,6 @@ private class DebugDiagnosticConsumer(
     private companion object {
         private val allowedKindsForDebugInfo = setOf(
             KtRealSourceElementKind,
-            KtFakeSourceElementKind.DesugaredCompoundAssignment,
             KtFakeSourceElementKind.ReferenceInAtomicQualifiedAccess,
             KtFakeSourceElementKind.SmartCastExpression,
             KtFakeSourceElementKind.DelegatingConstructorCall,

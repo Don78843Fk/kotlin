@@ -145,8 +145,7 @@ internal open class FirElementsRecorder : FirVisitor<Unit, MutableMap<KtElement,
     private fun KtSourceElement.isSourceForCompoundAccess(fir: FirElement): Boolean {
         val psi = psi
         val parentPsi = psi?.parent
-        if (kind != KtFakeSourceElementKind.DesugaredCompoundAssignment
-            && kind !is KtFakeSourceElementKind.DesugaredArrayAugmentedAssign
+        if (kind !is KtFakeSourceElementKind.DesugaredArrayAugmentedAssign
             && kind !is KtFakeSourceElementKind.DesugaredIncrementOrDecrement
         ) {
             return false
@@ -160,7 +159,7 @@ internal open class FirElementsRecorder : FirVisitor<Unit, MutableMap<KtElement,
     }
 
     private fun KtSourceElement.isSourceForArrayAugmentedAssign(fir: FirElement) =
-        // after desugaring, we also have FirBlock with the same source element.
+    // after desugaring, we also have FirBlock with the same source element.
         // We need to filter it out to map this source element to set/plusAssign call, so we check `is FirFunctionCall`
         (kind is KtFakeSourceElementKind.DesugaredArrayAugmentedAssign) && fir is FirFunctionCall
 
