@@ -610,7 +610,7 @@ private val inlineObjectsWithPureInitializationLoweringPhase = makeIrModulePhase
 private val whenBranchOptimiserLoweringPhase = makeIrModulePhase(
     ::WhenBranchOptimiserLowering,
     name = "WhenBranchOptimiserLowering",
-    description = "[Optimization] Remove unreachable code in when's",
+    description = "[Optimization] Remove unreachable code in when's, it needed because dead paths could have an invalid IR after the inliner",
 )
 
 private val fieldInitializersLoweringPhase = makeIrModulePhase(
