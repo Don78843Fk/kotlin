@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.ir.expressions.IrConstantArray
 import org.jetbrains.kotlin.ir.expressions.IrConstantValue
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.IrElementConstructorIndicator
+import org.jetbrains.kotlin.utils.SmartList
 
 class IrConstantArrayImpl internal constructor(
     @Suppress("UNUSED_PARAMETER")
@@ -27,5 +28,5 @@ class IrConstantArrayImpl internal constructor(
 
     override var originalBeforeInline: IrAttributeContainer? = null
 
-    override val elements: MutableList<IrConstantValue> = ArrayList()
+    override val elements: MutableList<IrConstantValue> = SmartList()
 }

@@ -221,6 +221,10 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
             default("valueArguments", smartList())
         }
 
+        impl(constantArray) {
+            default("elements", smartList())
+        }
+
         impl(dynamicOperatorExpression) {
             isLateinit("receiver")
             default("arguments", smartList())
