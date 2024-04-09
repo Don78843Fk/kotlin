@@ -182,6 +182,8 @@ class WasmIrToText(
             }
 
             is WasmImmediate.ConstString -> error("Pseudo immediate")
+
+            is WasmImmediate.Catch -> appendCatch(x)
         }
     }
 
@@ -575,6 +577,11 @@ class WasmIrToText(
 
     fun appendIdxIfNotZero(id: Int) {
         if (id != 0) appendElement(id.toString())
+    }
+
+    fun appendCatch(catch: WasmImmediate.Catch) {
+        appendElement(catch.type.mnemonic)
+        catch.immediates.forEach(this::appendImmediate)
     }
 
     fun appendModuleFieldReference(field: WasmSymbolReadOnly<WasmNamedModuleField>) {

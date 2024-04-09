@@ -137,33 +137,39 @@ abstract class WasmExpressionBuilder {
     @Suppress("UNUSED_PARAMETER")
     fun buildTryTable(
         label: String?,
-        catchesSize: Int,
+        catches: List<WasmImmediate.Catch>,
         resultType: WasmType? = null
     ) {
         numberOfNestedBlocks++
         buildInstrWithNoLocation(
             WasmOp.TRY_TABLE,
             WasmImmediate.BlockType.Value(resultType),
-            WasmImmediate.ConstI32(catchesSize),
+            WasmImmediate.ConstI32(catches.size),
+            *catches.toTypedArray()
         )
     }
 
-    fun buildNewCatch(tagIdx: Int, absoluteBlockLevel: Int) {
-        buildNewCatchInstr(WasmOp.NEW_CATCH, absoluteBlockLevel, tagIdx)
-    }
+    fun createNewCatch(tagIdx: Int, absoluteBlockLevel: Int) =
+        createNewCatchImmediate(WasmImmediate.Catch.CatchType.CATCH, absoluteBlockLevel, tagIdx)
 
-    fun buildNewCatchAll(absoluteBlockLevel: Int) {
-        buildNewCatchInstr(WasmOp.NEW_CATCH_ALL, absoluteBlockLevel)
-    }
+    fun createNewCatchAll(absoluteBlockLevel: Int) =
+        createNewCatchImmediate(WasmImmediate.Catch.CatchType.CATCH_ALL, absoluteBlockLevel)
 
-    fun buildNewCatchInstr(catchOp: WasmOp, absoluteBlockLevel: Int, tagIdx: Int? = null) {
-        val relativeLevel = numberOfNestedBlocks - absoluteBlockLevel - 1
+    private fun createNewCatchImmediate(
+        catchType: WasmImmediate.Catch.CatchType,
+        absoluteBlockLevel: Int,
+        tagIdx: Int? = null
+    ): WasmImmediate.Catch {
+        val relativeLevel = numberOfNestedBlocks - absoluteBlockLevel
         assert(relativeLevel >= 0) { "Negative relative block index" }
-        if (tagIdx == null) {
-            buildInstrWithNoLocation(catchOp, WasmImmediate.LabelIdx(relativeLevel))
-        } else {
-            buildInstrWithNoLocation(catchOp, WasmImmediate.TagIdx(tagIdx), WasmImmediate.LabelIdx(relativeLevel))
-        }
+
+        return WasmImmediate.Catch(
+            catchType,
+            *listOfNotNull(
+                tagIdx?.let(WasmImmediate::TableIdx),
+                WasmImmediate.LabelIdx(relativeLevel)
+            ).toTypedArray()
+        )
     }
 
     fun buildCatch(tagIdx: Int) {

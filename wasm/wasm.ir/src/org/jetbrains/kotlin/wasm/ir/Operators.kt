@@ -36,7 +36,9 @@ enum class WasmImmediateKind {
     STRUCT_TYPE_IDX,
     STRUCT_FIELD_IDX,
     TYPE_IMM,
-    HEAP_TYPE
+    HEAP_TYPE,
+
+    CATCH_VECTOR
 }
 
 sealed class WasmImmediate {
@@ -95,6 +97,19 @@ sealed class WasmImmediate {
 
     class HeapType(val value: WasmHeapType) : WasmImmediate() {
         constructor(type: WasmType) : this(type.getHeapType())
+    }
+
+    class Catch(val type: CatchType, vararg val immediates: WasmImmediate) : WasmImmediate() {
+        init {
+            require(immediates.size == type.immediates.size) { "Immediates sizes are not equals: ${type.name} required ${type.immediates.size}, but ${immediates.size} were provided" }
+        }
+
+        enum class CatchType(val mnemonic: String, val opcode: Int, vararg val immediates: WasmImmediateKind) {
+            CATCH("catch", 0x00, TAG_IDX, LABEL_IDX),
+            CATCH_REF("catch_ref", 0x01, TAG_IDX, LABEL_IDX),
+            CATCH_ALL("catch_all", 0x02, LABEL_IDX),
+            CATCH_ALL_REF("catch_all_ref", 0x03, LABEL_IDX)
+        }
     }
 
     // Pseudo-immediates
@@ -391,11 +406,7 @@ enum class WasmOp(
     // ============================================================
     // Exception handling
     // WIP: https://github.com/WebAssembly/exception-handling
-    TRY_TABLE("try_table", 0x1f, listOf(BLOCK_TYPE, CONST_I32)),
-    NEW_CATCH("catch", 0x00, listOf(TAG_IDX, LABEL_IDX)),
-    NEW_CATCH_REF("catch_ref", 0x01, listOf(TAG_IDX, LABEL_IDX)),
-    NEW_CATCH_ALL("catch_all", 0x02, LABEL_IDX),
-    NEW_CATCH_ALL_REF("catch_all_ref", 0x03, LABEL_IDX),
+    TRY_TABLE("try_table", 0x1f, listOf(BLOCK_TYPE, CONST_I32, CATCH_VECTOR)),
     THROW_REF("throw_ref", 0x0a, LABEL_IDX),
 
     // ============================================================
@@ -409,14 +420,5 @@ enum class WasmOp(
 
 const val WASM_OP_PSEUDO_OPCODE = 0xFFFF
 
-private val tryTableRelatedOpCodes = EnumSet.of(
-    WasmOp.NEW_CATCH,
-    WasmOp.NEW_CATCH_ALL,
-    WasmOp.NEW_CATCH_REF,
-    WasmOp.NEW_CATCH_ALL_REF
-)
-
 val opcodesToOp: Map<Int, WasmOp> =
-    enumValues<WasmOp>()
-        .filter { it !in tryTableRelatedOpCodes }
-        .associateBy { it.opcode }
+    enumValues<WasmOp>().associateBy { it.opcode }

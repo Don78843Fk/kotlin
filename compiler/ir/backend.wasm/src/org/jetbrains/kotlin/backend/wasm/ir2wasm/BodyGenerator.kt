@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrReturnableBlockSymbol
-import org.jetbrains.kotlin.ir.symbols.impl.IrVariableSymbolImpl
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
@@ -196,8 +195,11 @@ class BodyGenerator(
 
         body.buildBlock("CATCH_BLOCK", resultType) { catchBlockLabel ->
             body.buildBlock("TRY_BLOCK", exceptionType) { tryBlockLabel ->
-                body.buildTryTable(null, 1, exceptionType)
-                body.buildNewCatch(functionContext.tagIdx, tryBlockLabel)
+                body.buildTryTable(
+                    null,
+                    listOf(body.createNewCatch(functionContext.tagIdx, tryBlockLabel)),
+                    exceptionType
+                )
                 generateExpression(aTry.tryResult)
                 body.buildBr(catchBlockLabel, SourceLocation.NoLocation(""))
                 body.buildEnd()
@@ -839,9 +841,13 @@ class BodyGenerator(
         body.buildBlock("CATCH_BLOCK", resultType) { catchBlockLabel ->
             body.buildBlock("CATCH_ALL_BLOCK", throwableType) { catchAllBlockLabel ->
                 body.buildBlock("TRY_BLOCK") { tryBlockLabel ->
-                    body.buildTryTable(null, 2)
-                    body.buildNewCatch(functionContext.tagIdx, catchAllBlockLabel)
-                    body.buildNewCatchAll(tryBlockLabel)
+                    body.buildTryTable(
+                        null,
+                        listOf(
+                            body.createNewCatch(functionContext.tagIdx, catchAllBlockLabel),
+                            body.createNewCatchAll(tryBlockLabel)
+                        )
+                    )
                     processContainerExpression(expression)
                     body.buildBr(catchBlockLabel, SourceLocation.NoLocation(""))
                     body.buildEnd()
